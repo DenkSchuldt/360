@@ -6,7 +6,7 @@ import './Viewer.scss';
 
 const Viewer = props => {
   const {
-    idx, total, src, name, tags, location, camera, setCurrentIndex
+    id, idx, total, src, name, location, setCurrentIndex
   } = props;
   const [ viewer, setViewer ] = useState();
   const [ index, setIndex ] = useState('');
@@ -67,14 +67,34 @@ const Viewer = props => {
         className='my-vwr'>
       </div>
       <div className='my-vwr-footer'>
-        {
-          tags.map((t, i) => (
-            <span
-              key={i}>
-              { `#${t}` }
-            </span>
-          ))
-        }
+        <div
+          className="fb-share-button"
+          data-href="https://360.dennyschuldt.com"
+          data-layout="button"
+          data-size="small">
+          <a
+            target="_blank"
+            href={`https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2F360.dennyschuldt.com%3Fid%3D${id}%2F&amp;src=sdkpreparse`}
+            class="fb-xfbml-parse-ignore">
+            Share
+          </a>
+        </div>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          className="twitter-share-button"
+          href={`https://twitter.com/intent/tweet?text=${escape(`Aventuras en 360: Mira ` + name)}`}>
+          Tweet
+        </a>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          className="github-button"
+          href="https://github.com/denkschuldt/360"
+          data-color-scheme="no-preference: dark; light: dark; dark: dark;"
+          aria-label="Star denkschuldt/360 on GitHub">
+          Star
+        </a>
       </div>
     </div>
   )

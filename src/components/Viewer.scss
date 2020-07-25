@@ -70,16 +70,19 @@
   .my-vwr-footer {
     width: 100%;
     margin: auto;
+    display: flex;
     text-align: right;
+    align-items: center;
     min-height: fit-content;
+    justify-content: flex-end;
     span {
-      cursor: pointer;
-      margin-left: 12px;
-      color: var(--primary-color);
-      transition: color var(--seconds) ease;
-      &:hover {
-        color: var(--black);
-      }
+      line-height: 0;
+      margin-left: 8px;
+    }
+    .github-button,
+    .fb-share-button,
+    .twitter-share-button {
+      margin-left: 8px;
     }
   }
 }

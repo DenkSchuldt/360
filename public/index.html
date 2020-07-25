@@ -2,14 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Denny K. Schuldt</title>
+    <title>Aventuras en 360 - Denny K. Schuldt</title>
+    <meta name="title" content="Aventuras en 360 - Denny K. Schuldt">
+    <meta name="description" content="I created this project to show the touristic places I've been in with a 360º view. All pictures featured are mine and taken by myself, sometimes with a phone, others with a 360 camera.">
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="keywords" content="Denny Schuldt, VR, 360, Realidad Virtual, Virtual reality, Geopanoramas, Photospheres" />
-    <meta
-      name="description"
-      content="Denny K. Schuldt's personal website."/>
+    <meta name="keywords" content="Denny K. Schuldt, VR, 360, Geopanoramas, Photospheres" />
     <meta name="theme-color" content="#000000" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
@@ -20,9 +19,46 @@
       src="https://kit.fontawesome.com/6433c31685.js"
       crossorigin="anonymous">
     </script>
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://360.dennyschuldt.com/">
+    <meta property="og:title" content="Aventuras en 360 - Denny K. Schuldt">
+    <meta property="og:description" content="I created this project to show the touristic places I've been in with a 360º view. All pictures featured are mine and taken by myself, sometimes with a phone, others with a 360 camera.">
+    <meta property="og:image" content="https://github.com/DenkSchuldt/360/blob/master/public/images/Quilotoa/001.jpg?raw=true">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://360.dennyschuldt.com/">
+    <meta property="twitter:title" content="Aventuras en 360 - Denny K. Schuldt">
+    <meta property="twitter:description" content="I created this project to show the touristic places I've been in with a 360º view. All pictures featured are mine and taken by myself, sometimes with a phone, others with a 360 camera.">
+    <meta property="twitter:image" content="https://github.com/DenkSchuldt/360/blob/master/public/images/Quilotoa/001.jpg?raw=true">
   </head>
   <body>
+    <div id="fb-root"></div>
+    <script
+      async
+      defer
+      crossorigin="anonymous"
+      src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v7.0"
+      nonce="ceNanqop">
+    </script>
+    <script>
+      window.twttr = (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0],
+          t = window.twttr || {};
+        if (d.getElementById(id)) return t;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js, fjs);
+
+        t._e = [];
+        t.ready = function(f) {
+          t._e.push(f);
+        };
+
+        return t;
+      }(document, "script", "twitter-wjs"));
+    </script>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="AventurasEn360"></div>
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
   </body>
 </html>

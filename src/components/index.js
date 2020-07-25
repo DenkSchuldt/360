@@ -9,14 +9,17 @@ import data from './../data.json';
 import './index.scss';
 
 const App = () => {
-  const [ currentIndex, setIndex ] = useState(
-    localStorage.getItem('my-index') ?
-    Number(localStorage.getItem('my-index')) :
-    0
-  );
+  const [ currentIndex, setIndex ] = useState(() => {
+    let id = localStorage.getItem('my-id');
+    if (window.location.search) {
+      id = new URLSearchParams(window.location.search).get('id');
+    }
+    const idx = data.findIndex(p => p.id == id);
+    return idx >= 0 ? idx : 0;
+  });
   const setCurrentIndex = (idx) => {
     setIndex(idx);
-    localStorage.setItem('my-index', idx);
+    localStorage.setItem('my-id', data[idx]?.id);
   }
   const isPrevVisible = currentIndex > 0;
   const isNextVisible = currentIndex < data.length - 1;
