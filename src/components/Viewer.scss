@@ -91,14 +91,21 @@
   .my-vwr-wrapper {
     padding: 36px 0;
     .my-vwr-header {
+      .index {
+        font-size: 20px;
+        min-width: fit-content;
+      }
       .content {
         strong {
-          font-size: 18px;
+          font-size: 16px;
         }
         div {
           font-size: 14px;
         }
       }
+    }
+    .my-vwr {
+      margin-top: 0;
     }
   }
 }

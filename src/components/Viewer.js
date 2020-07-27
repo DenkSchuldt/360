@@ -83,7 +83,7 @@ const Viewer = props => {
           target="_blank"
           rel="noopener noreferrer"
           className="twitter-share-button"
-          href={`${escape('https://twitter.com/intent/tweet?text=Aventuras en 360: Mira ' + name)}`}>
+          href={`${escape('https://twitter.com/intent/tweet?text=Aventuras en 360: Mira ' + name + ' ' + window.location.origin + '?id=' + id)}`}>
           Tweet
         </a>
         <a
