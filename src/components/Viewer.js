@@ -12,7 +12,6 @@ const Viewer = props => {
   const [ index, setIndex ] = useState('');
   useEffect(() => {
     setIndex(idx + 1);
-    console.log(`${window.location.origin}/images/${src}`);
     let pano = new window.PANOLENS.ImagePanorama(`${window.location.origin}/images/${src}`);
     let v;
     if (viewer) {
@@ -74,8 +73,8 @@ const Viewer = props => {
           data-size="small">
           <a
             target="_blank"
-            href={`https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2F360.dennyschuldt.com%3Fid%3D${id}%2F&amp;src=sdkpreparse`}
-            class="fb-xfbml-parse-ignore">
+            href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}src=sdkpreparse`}
+            className="fb-xfbml-parse-ignore">
             Share
           </a>
         </div>
@@ -83,7 +82,7 @@ const Viewer = props => {
           target="_blank"
           rel="noopener noreferrer"
           className="twitter-share-button"
-          href={`${escape('https://twitter.com/intent/tweet?text=Aventuras en 360: Mira ' + name + ' ' + window.location.origin + '?id=' + id)}`}>
+          href={`${escape('https://twitter.com/intent/tweet?text=' + window.location.href)}`}>
           Tweet
         </a>
         <a

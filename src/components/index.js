@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useParams, useHistory } from "react-router-dom";
 
 import Header from './Header';
 import Viewer from './Viewer';
@@ -9,12 +10,11 @@ import data from './../data.json';
 import './index.scss';
 
 const App = () => {
+  const { id } = useParams();
+  const history = useHistory();
   const [ currentIndex, setIndex ] = useState(() => {
-    let id = localStorage.getItem('my-id');
-    if (window.location.search) {
-      id = new URLSearchParams(window.location.search).get('id');
-    }
-    const idx = data.findIndex(p => p.id == id);
+    let storedId = id || localStorage.getItem('my-id');
+    const idx = data.findIndex(p => p.id == storedId);
     return idx >= 0 ? idx : 0;
   });
   const setCurrentIndex = (idx) => {
@@ -25,11 +25,15 @@ const App = () => {
   const isNextVisible = currentIndex < data.length - 1;
   const previous = () => {
     if (isPrevVisible) {
+      const item = data[currentIndex - 1];
+      history.push(`/id/${item.id}`);
       setCurrentIndex(currentIndex - 1);
     }
   }
   const next = () => {
     if (isNextVisible) {
+      const item = data[currentIndex + 1];
+      history.push(`/id/${item.id}`);
       setCurrentIndex(currentIndex + 1);
     }
   }
