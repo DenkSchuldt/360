@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <React.StrictMode>
       <Router>
         <Switch>
-          <Route path="/(|id)/:id?">
+          <Route path="/">
             <App />
           </Route>
           <Route>
