@@ -89,8 +89,10 @@
 
 @media only screen and (max-width: 650px) {
   .my-vwr-wrapper {
-    padding: 36px 0;
+    padding-top: 0px;
+    padding-bottom: 36px;
     .my-vwr-header {
+      margin: 16px auto;
       .index {
         font-size: 20px;
         min-width: fit-content;
@@ -106,6 +108,7 @@
     }
     .my-vwr {
       margin-top: 0;
+      height: calc(100vh - 200px);
     }
   }
 }

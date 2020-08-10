@@ -22,7 +22,8 @@ const Viewer = props => {
         cameraFov: 65,
         autoRotate: true,
         autoRotateSpeed: 1,
-        autoRotateActivationDuration: 10000
+        autoRotateActivationDuration: 10000,
+        controlButtons: ['fullscreen', 'setting']
       });
       v.getCamera().translateX(500);
       v.getCamera().translateY(-100);
