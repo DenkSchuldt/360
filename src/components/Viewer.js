@@ -6,7 +6,7 @@ import './Viewer.scss';
 
 const Viewer = props => {
   const {
-    id, idx, total, src, name, location, setCurrentIndex
+    id, idx, total, src, name, marker, location, setCurrentIndex
   } = props;
   const [ viewer, setViewer ] = useState();
   const [ index, setIndex ] = useState('');
@@ -65,6 +65,16 @@ const Viewer = props => {
       <div
         id='myVwr'
         className='my-vwr'>
+        {
+          marker &&
+          <a
+            href={marker}
+            target='_blank'
+            className='my-vwr-marker'
+            rel='noopener noreferrer'>
+            <i class="fas fa-map-marked-alt"></i>
+          </a>
+        }
       </div>
       <div className='my-vwr-footer'>
         <div
