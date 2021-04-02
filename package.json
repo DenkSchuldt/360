@@ -2,7 +2,7 @@
   "name": "AventurasEn360",
   "version": "1.1.0",
   "private": false,
-  "homepage": "https://360.dennyschuldt.com",
+  "homepage": "https://denkschuldt.github.io/360",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
