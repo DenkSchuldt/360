@@ -12,7 +12,7 @@ const Viewer = props => {
   const [ index, setIndex ] = useState('');
   useEffect(() => {
     setIndex(idx + 1);
-    let pano = new window.PANOLENS.ImagePanorama(`${window.location.origin}/images/${src}`);
+    let pano = new window.PANOLENS.ImagePanorama(`${window.location.origin}/360/images/${src}`);
     let v;
     if (viewer) {
       v = viewer;
