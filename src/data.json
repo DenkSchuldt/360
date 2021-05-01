@@ -14,7 +14,8 @@
     "name": "Nariz del Diablo",
     "location": "Alausí. Provincia de Chimborazo, Ecuador",
     "marker": "https://goo.gl/maps/92wEptJFxY1hwSkj7",
-    "tags": ["Chimborazo", "Ecuador"]
+    "tags": ["Chimborazo", "Ecuador"],
+    "date": 1580014800000
   },
   {
     "id": 1595694311863,
@@ -22,7 +23,8 @@
     "name": "Cascada Panamá",
     "location": "Huigra. Provincia de Chimborazo, Ecuador",
     "marker": "https://goo.gl/maps/s5ReUnySLv4HsNyx7",
-    "tags": ["Chimborazo", "Ecuador"]
+    "tags": ["Chimborazo", "Ecuador"],
+    "date": 1580014800000
   },
   {
     "id": 1595694311862,
@@ -30,7 +32,8 @@
     "name": "Obelisco",
     "location": "Av. 9 de Julio. Buenos Aires, Argentina",
     "marker": "https://goo.gl/maps/2NMR4ierS6VwfukcA",
-    "tags": ["Buenos Aires", "Argentina"]
+    "tags": ["Buenos Aires", "Argentina"],
+    "date": 1566277200000
   },
   {
     "id": 1595694311861,
@@ -38,7 +41,8 @@
     "name": "Casa Rosada",
     "location": "Buenos Aires, Argentina",
     "marker": "https://goo.gl/maps/rxJK6xNoLBV8n2py7",
-    "tags": ["Buenos Aires", "Argentina"]
+    "tags": ["Buenos Aires", "Argentina"],
+    "date": 1566277200000
   },
   {
     "id": 1595694311860,
@@ -46,7 +50,8 @@
     "name": "Centro Cultural Kirchner",
     "location": "Buenos Aires, Argentina",
     "marker": "https://goo.gl/maps/WZapMJWcDFrvakvA7",
-    "tags": ["Buenos Aires", "Argentina"]
+    "tags": ["Buenos Aires", "Argentina"],
+    "date": 1566277200000
   },
   {
     "id": 1595694311859,
@@ -54,7 +59,8 @@
     "name": "Mafalda, Susanita y Manolito",
     "location": "San Telmo. Buenos Aires, Argentina",
     "marker": "https://goo.gl/maps/uk4uE6nAkFLR719b6",
-    "tags": ["Buenos Aires", "Argentina"]
+    "tags": ["Buenos Aires", "Argentina"],
+    "date": 1566622800000
   },
   {
     "id": 1595694311858,
@@ -62,7 +68,8 @@
     "name": "Paseo de la Historieta",
     "location": "San Telmo. Buenos Aires, Argentina",
     "marker": "https://goo.gl/maps/1xyaUX8FJsYjLVsNA",
-    "tags": ["Buenos Aires", "Argentina"]
+    "tags": ["Buenos Aires", "Argentina"],
+    "date": 1566622800000
   },
   {
     "id": 1595694311857,
@@ -70,7 +77,8 @@
     "name": "La Bombonera",
     "location": "La Boca. Buenos Aires, Argentina",
     "marker": "https://goo.gl/maps/XaMsB9xNQyh5Qxtx5",
-    "tags": ["Buenos Aires", "Argentina"]
+    "tags": ["Buenos Aires", "Argentina"],
+    "date": 1566622800000
   },
   {
     "id": 1595694311856,
@@ -78,7 +86,8 @@
     "name": "Caminito",
     "location": "La Boca. Buenos Aires, Argentina",
     "marker": "https://goo.gl/maps/VG8uvCzxek6WRWaX7",
-    "tags": ["Buenos Aires", "Argentina"]
+    "tags": ["Buenos Aires", "Argentina"],
+    "date": 1566622800000
   },
   {
     "id": 1595694311855,
@@ -86,7 +95,8 @@
     "name": "Cementerio de la Recoleta",
     "location": "Recoleta. Buenos Aires, Argentina",
     "marker": "https://goo.gl/maps/DjwenypefsDpLXxPA",
-    "tags": ["Buenos Aires", "Argentina"]
+    "tags": ["Buenos Aires", "Argentina"],
+    "date": 1566622800000
   },
   {
     "id": 1595694311854,
@@ -94,7 +104,8 @@
     "name": "Cementerio de la Recoleta",
     "location": "Recoleta. Buenos Aires, Argentina",
     "marker": "https://goo.gl/maps/cPWPSzkGx5Weqweu8",
-    "tags": ["Buenos Aires", "Argentina"]
+    "tags": ["Buenos Aires", "Argentina"],
+    "date": 1566622800000
   },
   {
     "id": 1595694311853,
@@ -102,7 +113,8 @@
     "name": "Cataratas do Iguaçu",
     "location": "Foz do Iguaçu, Brasil",
     "marker": "https://goo.gl/maps/nsNPr8xshL8QcRzg6",
-    "tags": ["Iguazú"]
+    "tags": ["Iguazú"],
+    "date": 1566536400000
   },
   {
     "id": 1595694311852,
@@ -110,7 +122,8 @@
     "name": "Salto Dos Hermanas",
     "location": "Cataratas del Iguazú, Iguazú, Argentina",
     "marker": "https://goo.gl/maps/BhrSBK9s4FFZouWA7",
-    "tags": ["Iguazú", "Argentina"]
+    "tags": ["Iguazú", "Argentina"],
+    "date": 1566450000000
   },
   {
     "id": 1595694311851,
@@ -118,7 +131,8 @@
     "name": "Cueva De Los Tayos - Tayu Jee",
     "location": "Morona Santiago, Ecuador",
     "marker": "https://goo.gl/maps/h6gPb6a7LtCovaRb7",
-    "tags": ["Cueva de los Tayos", "Ecuador"]
+    "tags": ["Cueva de los Tayos", "Ecuador"],
+    "date": 1551589200000
   },
   {
     "id": 1595694311850,
@@ -126,7 +140,8 @@
     "name": "Iglesia Matriz Chordeleg",
     "location": "Chordeleg, Azuay, Ecuador",
     "marker": "https://goo.gl/maps/Ur9V9yTasK1R8emc8",
-    "tags": ["Chordeleg", "Ecuador"]
+    "tags": ["Chordeleg", "Ecuador"],
+    "date": 1549774800000
   },
   {
     "id": 1595694311849,
@@ -134,7 +149,8 @@
     "name": "Parque Chordeleg",
     "location": "Chordeleg, Azuay, Ecuador",
     "marker": "https://goo.gl/maps/xUQTsxNFsm9bzjuC8",
-    "tags": ["Chordeleg", "Ecuador"]
+    "tags": ["Chordeleg", "Ecuador"],
+    "date": 1549774800000
   },
   {
     "id": 1595694311848,
@@ -142,7 +158,8 @@
     "name": "Complejo Arqueológico Ingapirca",
     "location": "Provincia del Cañar, Ecuador",
     "marker": "https://goo.gl/maps/f7Vux5FfumVpuLfKA",
-    "tags": ["Ingapirca", "Ecuador"]
+    "tags": ["Ingapirca", "Ecuador"],
+    "date": 1549688400000
   },
   {
     "id": 1595694311847,
@@ -150,7 +167,8 @@
     "name": "Complejo Arqueológico Ingapirca",
     "location": "Provincia del Cañar, Ecuador",
     "marker": "https://goo.gl/maps/f7Vux5FfumVpuLfKA",
-    "tags": ["Ingapirca", "Ecuador"]
+    "tags": ["Ingapirca", "Ecuador"],
+    "date": 1549688400000
   },
   {
     "id": 1595694311846,
@@ -158,7 +176,8 @@
     "name": "Complejo Arqueológico Ingapirca",
     "location": "Provincia del Cañar, Ecuador",
     "marker": "https://goo.gl/maps/NnXZcj8yNRUXZmPu5",
-    "tags": ["Ingapirca", "Ecuador"]
+    "tags": ["Ingapirca", "Ecuador"],
+    "date": 1549688400000
   },
   {
     "id": 1595694311845,
@@ -166,7 +185,8 @@
     "name": "Museo Pumapungo",
     "location": "Cuenca, Azuay, Ecuador",
     "marker": "https://goo.gl/maps/MurthD2b3N57862v9",
-    "tags": ["Cuenca", "Ecuador"]
+    "tags": ["Cuenca", "Ecuador"],
+    "date": 1549774800000
   },
   {
     "id": 1595694311844,
@@ -174,7 +194,8 @@
     "name": "Plaza de San Francisco",
     "location": "Cuenca, Azuay, Ecuador",
     "marker": "https://goo.gl/maps/DhZHUXNqhCHadKYA7",
-    "tags": ["Cuenca", "Ecuador"]
+    "tags": ["Cuenca", "Ecuador"],
+    "date": 1549688400000
   },
   {
     "id": 1595694311843,
@@ -182,7 +203,8 @@
     "name": "Santuario Mariano del Carmen de la Asunción",
     "location": "Cuenca, Azuay, Ecuador",
     "marker": "https://goo.gl/maps/abpbxPGzUDY5XxP98",
-    "tags": ["Cuenca", "Ecuador"]
+    "tags": ["Cuenca", "Ecuador"],
+    "date": 1549688400000
   },
   {
     "id": 1595694311842,
@@ -190,7 +212,8 @@
     "name": "Catedral de la Inmaculada Concepción",
     "location": "Cuenca, Azuay, Ecuador",
     "marker": "https://goo.gl/maps/hVzkHCMoMvr6TuVW9",
-    "tags": ["Cuenca", "Ecuador"]
+    "tags": ["Cuenca", "Ecuador"],
+    "date": 1549688400000
   },
   {
     "id": 1595694311841,
@@ -198,7 +221,8 @@
     "name": "Catedral de la Inmaculada Concepción",
     "location": "Cuenca, Azuay, Ecuador",
     "marker": "https://goo.gl/maps/nGTtwXhJA1757hvn8",
-    "tags": ["Cuenca", "Ecuador"]
+    "tags": ["Cuenca", "Ecuador"],
+    "date": 1549688400000
   },
   {
     "id": 1595694311840,
@@ -206,7 +230,8 @@
     "name": "Parque Calderón",
     "location": "Cuenca, Azuay, Ecuador",
     "marker": "https://goo.gl/maps/Fho5YFdeoGyxSn3F7",
-    "tags": ["Cuenca", "Ecuador"]
+    "tags": ["Cuenca", "Ecuador"],
+    "date": 1549688400000
   },
   {
     "id": 1595694311839,
@@ -214,7 +239,8 @@
     "name": "La Casa del Árbol",
     "location": "Baños de Agua Santa, Ecuador",
     "marker": "https://goo.gl/maps/gex5rbJCQR89zV1k8",
-    "tags": ["Baños", "Ecuador"]
+    "tags": ["Baños", "Ecuador"],
+    "date": 1549170000000
   },
   {
     "id": 1595694311838,
@@ -222,7 +248,8 @@
     "name": "Cascada El Pailón del diablo",
     "location": "Baños de Agua Santa, Ecuador",
     "marker": "https://goo.gl/maps/wxgcRNckfxkv4CBD9",
-    "tags": ["Baños", "Ecuador"]
+    "tags": ["Baños", "Ecuador"],
+    "date": 1549170000000
   },
   {
     "id": 1595694311837,
@@ -230,7 +257,8 @@
     "name": "Cascada El Pailón del diablo",
     "location": "Baños de Agua Santa, Ecuador",
     "marker": "https://goo.gl/maps/4kdKKmQJZDanWsMg9",
-    "tags": ["Baños", "Ecuador"]
+    "tags": ["Baños", "Ecuador"],
+    "date": 1549170000000
   },
   {
     "id": 1595694311836,
@@ -238,7 +266,8 @@
     "name": "Basílica Católica Nuestra Señora del Rosario de Agua Santa",
     "location": "Baños de Agua Santa, Ecuador",
     "marker": "https://goo.gl/maps/EFQ6TtbVoZ1YkoES7",
-    "tags": ["Baños", "Ecuador"]
+    "tags": ["Baños", "Ecuador"],
+    "date": 1549083600000
   },
   {
     "id": 1595694311835,
@@ -246,7 +275,8 @@
     "name": "Museo Fray Enrique Mideros",
     "location": "Baños de Agua Santa, Ecuador",
     "marker": "https://goo.gl/maps/uxfaGr6txdoL4JCr5",
-    "tags": ["Baños", "Ecuador"]
+    "tags": ["Baños", "Ecuador"],
+    "date": 1549083600000
   },
   {
     "id": 1595694311834,
@@ -254,7 +284,8 @@
     "name": "Museo Fray Enrique Mideros",
     "location": "Baños de Agua Santa, Ecuador",
     "marker": "https://goo.gl/maps/o2iyKzeLYDGi8HMt8",
-    "tags": ["Baños", "Ecuador"]
+    "tags": ["Baños", "Ecuador"],
+    "date": 1549083600000
   },
   {
     "id": 1595694311833,
@@ -262,7 +293,8 @@
     "name": "Museo Fray Enrique Mideros",
     "location": "Baños de Agua Santa, Ecuador",
     "marker": "https://goo.gl/maps/o588RNjyiThegvAq8",
-    "tags": ["Baños", "Ecuador"]
+    "tags": ["Baños", "Ecuador"],
+    "date": 1549083600000
   },
   {
     "id": 1595694311832,
@@ -270,7 +302,8 @@
     "name": "Museo Fray Enrique Mideros",
     "location": "Baños de Agua Santa, Ecuador",
     "marker": "https://goo.gl/maps/wmTmkSEhRuYJpb818",
-    "tags": ["Baños", "Ecuador"]
+    "tags": ["Baños", "Ecuador"],
+    "date": 1549083600000
   },
   {
     "id": 1595694311831,
@@ -278,7 +311,8 @@
     "name": "Museo Fray Enrique Mideros",
     "location": "Baños de Agua Santa, Ecuador",
     "marker": "https://goo.gl/maps/RW68V9wLu9HFmHHS8",
-    "tags": ["Baños", "Ecuador"]
+    "tags": ["Baños", "Ecuador"],
+    "date": 1549083600000
   },
   {
     "id": 1595694311830,
@@ -286,7 +320,8 @@
     "name": "Pasaje Artesanal Ermita de la Virgen",
     "location": "Baños de Agua Santa, Ecuador",
     "marker": "https://goo.gl/maps/K55WGHRL5vt25jNHA",
-    "tags": ["Baños", "Ecuador"]
+    "tags": ["Baños", "Ecuador"],
+    "date": 1549083600000
   },
   {
     "id": 1595694311829,
@@ -294,7 +329,8 @@
     "name": "Mirador del Quilotoa Shalalá",
     "location": "Pujilí, Cotopaxi, Ecuador",
     "marker": "https://goo.gl/maps/1Ciqujgfnzpxoruw9",
-    "tags": ["Cotopaxi", "Ecuador"]
+    "tags": ["Cotopaxi", "Ecuador"],
+    "date": 1499490000000
   },
   {
     "id": 1595694311828,
@@ -302,7 +338,8 @@
     "name": "Volcán Chimborazo",
     "location": "Provincia de Chimborazo, Ecuador",
     "marker": "https://goo.gl/maps/FB3MyYht4ihVPKwR7",
-    "tags": ["Chimborazo", "Ecuador"]
+    "tags": ["Chimborazo", "Ecuador"],
+    "date": 1489813200000
   },
   {
     "id": 1595694311827,
@@ -310,7 +347,8 @@
     "name": "Iglesia de Balbanera",
     "location": "Provincia de Chimborazo, Ecuador",
     "marker": "https://goo.gl/maps/zEnwNxZhNvd8rc7RA",
-    "tags": ["Chimborazo", "Ecuador"]
+    "tags": ["Chimborazo", "Ecuador"],
+    "date": 1489813200000
   },
   {
     "id": 1595694311826,
@@ -318,7 +356,8 @@
     "name": "Comuna Agua Blanca",
     "location": "Provincia de Manabí, Ecuador",
     "marker": "https://goo.gl/maps/CMfWvt9JHYKawLaB7",
-    "tags": ["Puerto López", "Manabí", "Ecuador"]
+    "tags": ["Puerto López", "Manabí", "Ecuador"],
+    "date": 1491195600000
   },
   {
     "id": 1595694311825,
@@ -326,7 +365,8 @@
     "name": "Comuna Agua Blanca",
     "location": "Provincia de Manabí, Ecuador",
     "marker": "https://goo.gl/maps/Aubp7Eo5Ptx5yQWFA",
-    "tags": ["Puerto López", "Manabí", "Ecuador"]
+    "tags": ["Puerto López", "Manabí", "Ecuador"],
+    "date": 1491195600000
   },
   {
     "id": 1595694311824,
@@ -334,7 +374,8 @@
     "name": "Playa de los Frailes",
     "location": "Provincia de Manabí, Ecuador",
     "marker": "https://goo.gl/maps/NaJnsZgoLrjQ9iC39",
-    "tags": ["Puerto López", "Manabí", "Ecuador"]
+    "tags": ["Puerto López", "Manabí", "Ecuador"],
+    "date": 1491195600000
   },
   {
     "id": 1595694311823,
@@ -342,7 +383,8 @@
     "name": "Muelle de Puerto López",
     "location": "Provincia de Manabí, Ecuador",
     "marker": "https://goo.gl/maps/SLgJJ9t31q1gLMuUA",
-    "tags": ["Puerto López", "Manabí", "Ecuador"]
+    "tags": ["Puerto López", "Manabí", "Ecuador"],
+    "date": 1491195600000
   },
   {
     "id": 1595694311822,
@@ -350,7 +392,8 @@
     "name": "Monumento al Sagrado Corazón de Jesús",
     "location": "Cerro del Carmen, Guayaquil, Ecuador",
     "marker": "https://goo.gl/maps/5nuHZdxVxjy4n4sQA",
-    "tags": ["Guayaquil", "Ecuador"]
+    "tags": ["Guayaquil", "Ecuador"],
+    "date": 1565413200000
   },
   {
     "id": 1595694311821,
@@ -358,7 +401,8 @@
     "name": "Hospicio del Corazón De Jesus",
     "location": "Parque Histórico de Guayaquil, Samborondón, Ecuador",
     "marker": "https://goo.gl/maps/JK3c6g3Z77v74aiU6",
-    "tags": ["Guayaquil", "Ecuador"]
+    "tags": ["Guayaquil", "Ecuador"],
+    "date": 1506142800000
   },
   {
     "id": 1595694311820,
@@ -366,7 +410,8 @@
     "name": "Parque Histórico de Guayaquil",
     "location": "Samborondón, Ecuador",
     "marker": "https://goo.gl/maps/RZt3gm4V7ofq9KRq6",
-    "tags": ["Samborondón", "Ecuador"]
+    "tags": ["Samborondón", "Ecuador"],
+    "date": 1506142800000
   },
   {
     "id": 1595694311819,
@@ -374,7 +419,8 @@
     "name": "Mirador Cerro Paraíso",
     "location": "Guayaquil, Ecuador",
     "marker": "https://goo.gl/maps/nYQftjKQ9ZBHHEd89",
-    "tags": ["Guayaquil", "Ecuador"]
+    "tags": ["Guayaquil", "Ecuador"],
+    "date": 1478581200000
   },
   {
     "id": 1595694311818,
@@ -382,7 +428,8 @@
     "name": "Misión Budista Templo Yuan Heng",
     "location": "Guayaquil, Ecuador",
     "marker": "https://goo.gl/maps/NjE1RCMGhpL3NTSe9",
-    "tags": ["Guayaquil", "Ecuador"]
+    "tags": ["Guayaquil", "Ecuador"],
+    "date": 1510981200000
   },
   {
     "id": 1595694311817,
@@ -390,7 +437,8 @@
     "name": "Parque Jardín Japonés",
     "location": "Guayaquil, Ecuador",
     "marker": "https://goo.gl/maps/YVJf7SktnqgG2PwU9",
-    "tags": ["Guayaquil", "Ecuador"]
+    "tags": ["Guayaquil", "Ecuador"],
+    "date": 1470027600000
   },
   {
     "id": 1595694311816,
@@ -398,7 +446,8 @@
     "name": "Estadio Cristian Benítez Betancourt",
     "location": "Guayaquil, Ecuador",
     "marker": "https://goo.gl/maps/zisYqeWTdkyDZib59",
-    "tags": ["Guayaquil", "Ecuador"]
+    "tags": ["Guayaquil", "Ecuador"],
+    "date": 1464757200000
   },
   {
     "id": 1595694311815,
@@ -406,7 +455,8 @@
     "name": "Estadio Monumental Banco Pichincha",
     "location": "Guayaquil, Ecuador",
     "marker": "https://goo.gl/maps/NHu8rEEqw9m8FBzQ6",
-    "tags": ["Guayaquil", "Ecuador"]
+    "tags": ["Guayaquil", "Ecuador"],
+    "date": 1494824400000
   },
   {
     "id": 1595694311814,
@@ -414,7 +464,8 @@
     "name": "Isla Santay",
     "location": "Guayaquil, Ecuador",
     "marker": "https://goo.gl/maps/Hf9ur5kpJPxkkese6",
-    "tags": ["Guayaquil", "Ecuador"]
+    "tags": ["Guayaquil", "Ecuador"],
+    "date": 1490072400000
   },
   {
     "id": 1595694311813,
@@ -422,7 +473,8 @@
     "name": "Isla Santay",
     "location": "Guayaquil, Ecuador",
     "marker": "https://goo.gl/maps/HXS1sZJGFMtwnQnf6",
-    "tags": ["Guayaquil", "Ecuador"]
+    "tags": ["Guayaquil", "Ecuador"],
+    "date": 1490072400000
   },
   {
     "id": 1595694311812,
@@ -430,7 +482,8 @@
     "name": "Cementerio Patrimonial",
     "location": "Guayaquil, Ecuador",
     "marker": "https://goo.gl/maps/vXDrs9QzBgvXLRAB8",
-    "tags": ["Guayaquil", "Ecuador"]
+    "tags": ["Guayaquil", "Ecuador"],
+    "date": 1501304400000
   },
   {
     "id": 1595694311811,
@@ -438,7 +491,8 @@
     "name": "Cementerio Patrimonial",
     "location": "Guayaquil, Ecuador",
     "marker": "https://goo.gl/maps/Y56C1eS1oEkqwMz36",
-    "tags": ["Guayaquil", "Ecuador"]
+    "tags": ["Guayaquil", "Ecuador"],
+    "date": 1501304400000
   },
   {
     "id": 1595694311810,
@@ -446,7 +500,8 @@
     "name": "Casa de Olmedo",
     "location": "Babahoyo, Ecuador",
     "marker": "https://goo.gl/maps/kSgtrK6F6ZiZtjq26",
-    "tags": ["Babahoyo", "Ecuador"]
+    "tags": ["Babahoyo", "Ecuador"],
+    "date": 1529643600000
   },
   {
     "id": 1595694302331,
@@ -454,7 +509,8 @@
     "name": "Casa de Olmedo",
     "location": "Babahoyo, Ecuador",
     "marker": "https://goo.gl/maps/HgPatBPgvEcFHGzX7",
-    "tags": ["Babahoyo", "Ecuador"]
+    "tags": ["Babahoyo", "Ecuador"],
+    "date": 1529643600000
   },
   {
     "id": 1595694292899,
@@ -462,7 +518,8 @@
     "name": "Malecón de Babahoyo",
     "location": "Babahoyo, Ecuador",
     "marker": "https://goo.gl/maps/LfoLTKsWQSVJCw2D6",
-    "tags": ["Babahoyo", "Ecuador"]
+    "tags": ["Babahoyo", "Ecuador"],
+    "date": 1462078800000
   },
   {
     "id": 1595694275068,
@@ -470,7 +527,8 @@
     "name": "Malecón de Babahoyo",
     "location": "Babahoyo, Ecuador",
     "marker": "https://goo.gl/maps/uEEZJHLm8i2R9BHr8",
-    "tags": ["Babahoyo", "Ecuador"]
+    "tags": ["Babahoyo", "Ecuador"],
+    "date": 1462078800000
   },
   {
     "id": 1595694260052,
@@ -478,7 +536,8 @@
     "name": "Plaza Central 24 de Mayo",
     "location": "Babahoyo, Ecuador",
     "marker": "https://goo.gl/maps/PHtcC8jP7wETE3gV9",
-    "tags": ["Babahoyo", "Ecuador"]
+    "tags": ["Babahoyo", "Ecuador"],
+    "date": 1419051600000
   },
   {
     "id": 1595694242685,
@@ -486,7 +545,8 @@
     "name": "Plaza Central 24 de Mayo",
     "location": "Babahoyo, Ecuador",
     "marker": "https://goo.gl/maps/gbJgDxDrCinARvb58",
-    "tags": ["Babahoyo", "Ecuador"]
+    "tags": ["Babahoyo", "Ecuador"],
+    "date": 1419051600000
   },
   {
     "id": 1595694227310,
@@ -494,7 +554,8 @@
     "name": "Plaza Central 24 de Mayo",
     "location": "Babahoyo, Ecuador",
     "marker": "https://goo.gl/maps/G7esmtVMZwURxNyP9",
-    "tags": ["Babahoyo", "Ecuador"]
+    "tags": ["Babahoyo", "Ecuador"],
+    "date": 1419051600000
   },
   {
     "id": 1595694217182,
@@ -502,6 +563,7 @@
     "name": "Plaza Central 24 de Mayo",
     "location": "Babahoyo, Ecuador",
     "marker": "https://goo.gl/maps/atAXRiTYGKByr8tS7",
-    "tags": ["Babahoyo", "Ecuador"]
+    "tags": ["Babahoyo", "Ecuador"],
+    "date": 1419051600000
   }
 ]
