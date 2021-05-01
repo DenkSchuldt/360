@@ -1,16 +1,32 @@
 
-import React, { useState } from 'react';
+import { motion } from "framer-motion";
 import { useHistory } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
 
 import Header from './Header';
 import Viewer from './Viewer';
+import TagsDialog from './TagsDialog';
 
-import data from './../data.json';
+import rawData from './../data.json';
 
 import './index.scss';
 
 const App = () => {
   const history = useHistory();
+  const [ data, setData ] = useState(rawData);
+  const [ anchoredTags, setTags ] = useState(() => {
+    let tags = [];
+    try {
+      tags = JSON.parse(localStorage.getItem('my-tags') || '[]');
+    } catch (e) {
+      console.log(e);
+    }
+    return tags;
+  });
+  const setAnchoredTags = tags => {
+    setTags(tags);
+    localStorage.setItem('my-tags', JSON.stringify(tags));
+  }
   const [ currentIndex, setIndex ] = useState(() => {
     const id = new URLSearchParams(history.location.search).get('id');
     let storedId = id || localStorage.getItem('my-id');
@@ -21,52 +37,79 @@ const App = () => {
     setIndex(idx);
     localStorage.setItem('my-id', data[idx]?.id);
   }
+  const [ isTagsDialogVisible, setIsTagsDialogVisible ] = useState(false);
   const isPrevVisible = currentIndex > 0;
   const isNextVisible = currentIndex < data.length - 1;
   const previous = () => {
     if (isPrevVisible) {
-      const item = data[currentIndex - 1];
-      history.replace(`?id=${item.id}`);
       setCurrentIndex(currentIndex - 1);
     }
   }
   const next = () => {
     if (isNextVisible) {
-      const item = data[currentIndex + 1];
-      history.replace(`?id=${item.id}`);
       setCurrentIndex(currentIndex + 1);
     }
   }
+  useEffect(() => {
+    const id = data[currentIndex].id;
+    if (anchoredTags.length) {
+      const array = rawData.filter(d => (
+        d.tags.some(t => anchoredTags.includes(t))
+      ));
+      const idx = array.findIndex(e => e.id == id);
+      setCurrentIndex(idx >= 0 ? idx : 0);
+      setData(array);
+    } else {
+      const idx = rawData.findIndex(e => e.id == id);
+      setCurrentIndex(idx >= 0 ? idx : 0);
+      setData(rawData);
+    }
+  }, [anchoredTags.reduce((a, c) => a + c, '')])
   return (
     <>
       <Header/>
       <main>
-        <button
+        <motion.button
           onClick={previous}
-          style={
-            !isPrevVisible ?
-            { visibility: 'hidden' } :
-            {}
-          }
+          initial={{ scale: 0 }}
+          animate={{
+            scale: (!isPrevVisible || isTagsDialogVisible) ? 0 : 1
+          }}
           className='my-btn-left'>
           <i className="fas fa-arrow-circle-left"></i>
-        </button>
+        </motion.button>
         <Viewer
+          history={history}
           idx={currentIndex}
           total={data.length}
           {...data[currentIndex]}
-          setCurrentIndex={setCurrentIndex}/>
-        <button
+          anchoredTags={anchoredTags}
+          setAnchoredTags={setAnchoredTags}
+          setCurrentIndex={setCurrentIndex}
+          openTagsDialog={() => setIsTagsDialogVisible(true)}/>
+        <motion.button
           onClick={next}
-          style={
-            !isNextVisible ?
-            { visibility: 'hidden' } :
-            {}
-          }
+          initial={{ scale: 0 }}
+          animate={{
+            scale: (!isNextVisible || isTagsDialogVisible) ? 0 : 1
+          }}
           className='my-btn-right'>
           <i className="fas fa-arrow-circle-right"></i>
-        </button>
+        </motion.button>
       </main>
+      {
+        isTagsDialogVisible &&
+        <TagsDialog
+          tags={rawData.reduce(
+            (computed, item) => {
+              return [...new Set([...computed, ...item.tags])]
+            },
+            []
+          )}
+          anchoredTags={anchoredTags}
+          setAnchoredTags={setAnchoredTags}
+          onClose={() => setIsTagsDialogVisible(false)}/>
+      }
     </>
   );
 }

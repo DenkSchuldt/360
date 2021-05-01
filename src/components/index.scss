@@ -48,7 +48,9 @@ main {
 
 @media only screen and (max-width: 650px) {
   main {
-    width: 90%;
+    top: 56px;
+    width: 100%;
+    position: absolute;
     button {
       &.my-btn-left {
         left: 12px;
