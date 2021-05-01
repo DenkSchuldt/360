@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 
 import Header from './Header';
 import Viewer from './Viewer';
+import TagsDialog from './TagsDialog';
 
 import rawData from './../data.json';
 
@@ -36,19 +37,16 @@ const App = () => {
     setIndex(idx);
     localStorage.setItem('my-id', data[idx]?.id);
   }
+  const [ isTagsDialogVisible, setIsTagsDialogVisible ] = useState(false);
   const isPrevVisible = currentIndex > 0;
   const isNextVisible = currentIndex < data.length - 1;
   const previous = () => {
     if (isPrevVisible) {
-      const item = data[currentIndex - 1];
-      history.replace(`?id=${item.id}`);
       setCurrentIndex(currentIndex - 1);
     }
   }
   const next = () => {
     if (isNextVisible) {
-      const item = data[currentIndex + 1];
-      history.replace(`?id=${item.id}`);
       setCurrentIndex(currentIndex + 1);
     }
   }
@@ -58,10 +56,12 @@ const App = () => {
       const array = rawData.filter(d => (
         d.tags.some(t => anchoredTags.includes(t))
       ));
-      setCurrentIndex(array.findIndex(e => e.id == id));
+      const idx = array.findIndex(e => e.id == id);
+      setCurrentIndex(idx >= 0 ? idx : 0);
       setData(array);
     } else {
-      setCurrentIndex(rawData.findIndex(e => e.id == id));
+      const idx = rawData.findIndex(e => e.id == id);
+      setCurrentIndex(idx >= 0 ? idx : 0);
       setData(rawData);
     }
   }, [anchoredTags.reduce((a, c) => a + c, '')])
@@ -73,28 +73,43 @@ const App = () => {
           onClick={previous}
           initial={{ scale: 0 }}
           animate={{
-            scale: !isPrevVisible ? 0 : 1
+            scale: (!isPrevVisible || isTagsDialogVisible) ? 0 : 1
           }}
           className='my-btn-left'>
           <i className="fas fa-arrow-circle-left"></i>
         </motion.button>
         <Viewer
+          history={history}
           idx={currentIndex}
           total={data.length}
           {...data[currentIndex]}
           anchoredTags={anchoredTags}
           setAnchoredTags={setAnchoredTags}
-          setCurrentIndex={setCurrentIndex}/>
+          setCurrentIndex={setCurrentIndex}
+          openTagsDialog={() => setIsTagsDialogVisible(true)}/>
         <motion.button
           onClick={next}
           initial={{ scale: 0 }}
           animate={{
-            scale: !isNextVisible ? 0 : 1
+            scale: (!isNextVisible || isTagsDialogVisible) ? 0 : 1
           }}
           className='my-btn-right'>
           <i className="fas fa-arrow-circle-right"></i>
         </motion.button>
       </main>
+      {
+        isTagsDialogVisible &&
+        <TagsDialog
+          tags={rawData.reduce(
+            (computed, item) => {
+              return [...new Set([...computed, ...item.tags])]
+            },
+            []
+          )}
+          anchoredTags={anchoredTags}
+          setAnchoredTags={setAnchoredTags}
+          onClose={() => setIsTagsDialogVisible(false)}/>
+      }
     </>
   );
 }

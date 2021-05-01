@@ -1,5 +1,5 @@
 
-header {
+.my-header {
   color: #fff;
   width: 100%;
   height: 56px;
@@ -33,7 +33,7 @@ header {
 }
 
 @media only screen and (max-width: 650px) {
-  header {
+  my-header {
     z-index: 1;
     position: absolute;
     h1 {

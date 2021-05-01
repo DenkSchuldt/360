@@ -6,7 +6,9 @@ import './Header.scss';
 
 const Header = ({ style }) => {
   return (
-    <header style={style}>
+    <header
+      style={style}
+      className='my-header'>
       <h1>Aventuras en 360º</h1>
       <div>
         <a

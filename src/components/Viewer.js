@@ -11,12 +11,13 @@ dayjs.locale("es");
 
 const Viewer = props => {
   const {
-    idx, total, src, name, marker, date, tags, location, setCurrentIndex,
-    anchoredTags, setAnchoredTags
+    id, idx, total, src, name, marker, date, tags, location, setCurrentIndex,
+    anchoredTags, setAnchoredTags, openTagsDialog, history
   } = props;
   const [ viewer, setViewer ] = useState();
   const [ index, setIndex ] = useState('');
   useEffect(() => {
+    history.replace(`?id=${id}`);
     setIndex(idx + 1);
     let pano = new window.PANOLENS.ImagePanorama(`${window.location.origin}/360/images/${src}`);
     let v;
@@ -38,7 +39,7 @@ const Viewer = props => {
     v.clearAllCache();
     v.add(pano);
     v.setPanorama(pano);
-  }, [idx]);
+  }, [id, idx]);
   return (
     <div
       className='my-vwr-wrapper'>
@@ -93,12 +94,11 @@ const Viewer = props => {
             <span className='dnk-dot'>&#183;</span>
           </>
         }
-        <motion.div layout className='dnk-tags'>
+        <motion.div className='dnk-tags'>
           {
             tags.map((tag, idx) => (
               <motion.span
                 key={idx}
-                layoutTransition
                 className='dnk-tag'
                 onClick={() => {
                   setAnchoredTags(
@@ -121,6 +121,15 @@ const Viewer = props => {
                 </AnimatePresence>
               </motion.span>
             ))
+          }
+          {
+            tags.length > 0 &&
+            <motion.span
+              key={idx}
+              className='dnk-tag'
+              onClick={openTagsDialog}>
+              <i className="fas fa-plus-circle"></i>
+            </motion.span>
           }
         </motion.div>
       </div>
