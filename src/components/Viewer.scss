@@ -8,8 +8,8 @@
   box-sizing: border-box;
   .my-vwr-header {
     width: 100%;
-    margin: auto;
     display: flex;
+    margin: 0 auto;
     align-items: center;
     min-height: fit-content;
     .index {
@@ -27,6 +27,7 @@
         border: none;
         margin: -4px;
         padding: 4px;
+        outline: none;
         color: inherit;
         text-align: right;
         font-size: inherit;
@@ -36,9 +37,6 @@
         -webkit-appearance: none;
         background-color: transparent;
         outline: none;
-        &:focus {
-          outline: 1px solid var(--primary-color);
-        }
       }
       input::-webkit-outer-spin-button,
       input::-webkit-inner-spin-button {
@@ -57,10 +55,10 @@
   }
   .my-vwr {
     width: 100%;
-    margin: 16px auto;
     position: relative;
     border-radius: 10px;
-    height: calc(100vh - 244px);
+    margin: 16px auto 0 auto;
+    height: calc(100% - 106px); /* 48px + 42px * 16px*/
     box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2),
     0px 8px 10px 1px rgba(0, 0, 0, 0.14),
     0px 3px 14px 2px rgba(0, 0, 0, 0.12);
@@ -72,39 +70,57 @@
       left: 14px;
       color: #fff;
       bottom: 10px;
+      cursor: pointer;
       font-size: 24px;
       position: absolute;
       &:hover {
+        cursor: pointer;
         filter: drop-shadow(rgb(255, 255, 255) 0px 0px 5px);
       }
     }
   }
   .my-vwr-footer {
-    width: 100%;
-    margin: auto;
     display: flex;
-    text-align: right;
+    font-size: 14px;
+    margin-top: 16px;
     align-items: center;
-    min-height: fit-content;
+    color: var(--black);
     justify-content: flex-end;
-    span {
-      line-height: 0;
-      margin-left: 8px;
+    .dnk-dot {
+      padding: 0 8px;
+      font-size: 24px;
+      margin-top: 2px;
+      line-height: 0px;
     }
-    .github-button,
-    .fb-share-button,
-    .twitter-share-button {
-      margin-left: 8px;
+    .dnk-tags {
+      .dnk-tag {
+        cursor: pointer;
+        color: var(--primary-color);
+        &:not(:first-of-type) {
+          margin-left: 8px;
+        }
+        .fa-thumbtack {
+          font-size: 12px;
+          margin-left: 2px;
+        }
+      }
     }
   }
 }
 
 @media only screen and (max-width: 650px) {
   .my-vwr-wrapper {
-    padding-top: 0px;
-    padding-bottom: 36px;
+    padding: 0;
     .my-vwr-header {
-      margin: 16px auto;
+      z-index: 1;
+      padding: 8px;
+      margin: 12px;
+      margin-top: 16px;
+      border-radius: 10px;
+      box-sizing: border-box;
+      width: calc(100% - 24px);
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 19px 58px rgba(0,0,0,0.10), 0 5px 12px rgba(0,0,0,0.2);
       .index {
         font-size: 20px;
         min-width: fit-content;
@@ -119,8 +135,29 @@
       }
     }
     .my-vwr {
-      margin-top: 0;
-      height: calc(100vh - 200px);
+      margin: 0;
+      height: 100%;
+      border-radius: 0;
+      position: absolute;
+      div,
+      canvas {
+        border-radius: 0px;
+      }
+    }
+    .my-vwr-footer {
+      right: 0;
+      z-index: 2;
+      bottom: 32px;
+      margin: 12px;
+      padding: 8px;
+      display: flex;
+      position: absolute;
+      width: fit-content;
+      align-items: center;
+      border-radius: 10px;
+      box-sizing: border-box;
+      background-color: rgba(255,255,255,0.9);
+      box-shadow: 0 19px 58px rgba(0,0,0,0.10), 0 5px 12px rgba(0,0,0,0.2);
     }
   }
 }

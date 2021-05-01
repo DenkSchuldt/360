@@ -1,16 +1,31 @@
 
-import React, { useState } from 'react';
+import { motion } from "framer-motion";
 import { useHistory } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
 
 import Header from './Header';
 import Viewer from './Viewer';
 
-import data from './../data.json';
+import rawData from './../data.json';
 
 import './index.scss';
 
 const App = () => {
   const history = useHistory();
+  const [ data, setData ] = useState(rawData);
+  const [ anchoredTags, setTags ] = useState(() => {
+    let tags = [];
+    try {
+      tags = JSON.parse(localStorage.getItem('my-tags') || '[]');
+    } catch (e) {
+      console.log(e);
+    }
+    return tags;
+  });
+  const setAnchoredTags = tags => {
+    setTags(tags);
+    localStorage.setItem('my-tags', JSON.stringify(tags));
+  }
   const [ currentIndex, setIndex ] = useState(() => {
     const id = new URLSearchParams(history.location.search).get('id');
     let storedId = id || localStorage.getItem('my-id');
@@ -37,35 +52,48 @@ const App = () => {
       setCurrentIndex(currentIndex + 1);
     }
   }
+  useEffect(() => {
+    const id = data[currentIndex].id;
+    if (anchoredTags.length) {
+      const array = rawData.filter(d => (
+        d.tags.some(t => anchoredTags.includes(t))
+      ));
+      setCurrentIndex(array.findIndex(e => e.id == id));
+      setData(array);
+    } else {
+      setCurrentIndex(rawData.findIndex(e => e.id == id));
+      setData(rawData);
+    }
+  }, [anchoredTags.reduce((a, c) => a + c, '')])
   return (
     <>
       <Header/>
       <main>
-        <button
+        <motion.button
           onClick={previous}
-          style={
-            !isPrevVisible ?
-            { visibility: 'hidden' } :
-            {}
-          }
+          initial={{ scale: 0 }}
+          animate={{
+            scale: !isPrevVisible ? 0 : 1
+          }}
           className='my-btn-left'>
           <i className="fas fa-arrow-circle-left"></i>
-        </button>
+        </motion.button>
         <Viewer
           idx={currentIndex}
           total={data.length}
           {...data[currentIndex]}
+          anchoredTags={anchoredTags}
+          setAnchoredTags={setAnchoredTags}
           setCurrentIndex={setCurrentIndex}/>
-        <button
+        <motion.button
           onClick={next}
-          style={
-            !isNextVisible ?
-            { visibility: 'hidden' } :
-            {}
-          }
+          initial={{ scale: 0 }}
+          animate={{
+            scale: !isNextVisible ? 0 : 1
+          }}
           className='my-btn-right'>
           <i className="fas fa-arrow-circle-right"></i>
-        </button>
+        </motion.button>
       </main>
     </>
   );
