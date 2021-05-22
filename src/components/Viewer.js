@@ -1,9 +1,11 @@
 
 import dayjs from 'dayjs';
 import es from 'dayjs/locale/es';
-import { motion, AnimatePresence } from "framer-motion";
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from "framer-motion";
+import { CircularProgressbar } from 'react-circular-progressbar';
 
+import 'react-circular-progressbar/dist/styles.css';
 import './Viewer.scss';
 
 dayjs.locale("es");
@@ -16,10 +18,16 @@ const Viewer = props => {
   } = props;
   const [ viewer, setViewer ] = useState();
   const [ index, setIndex ] = useState('');
+  const [ progress, setProgress ] = useState();
   useEffect(() => {
     history.replace(`?id=${id}`);
     setIndex(idx + 1);
     let pano = new window.PANOLENS.ImagePanorama(`${window.location.origin}/360/images/${src}`);
+    pano.addEventListener('enter', () => setProgress(0));
+    pano.addEventListener('progress', e => {
+      const p = e.progress.loaded / e.progress.total * 100;
+      setProgress(p == 100 ? undefined : p);
+    });
     let v;
     if (viewer) {
       v = viewer;
@@ -83,6 +91,16 @@ const Viewer = props => {
             <i className="fas fa-map-marked-alt"></i>
           </a>
         }
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{
+            scale: progress != undefined ? 1 : 0
+          }}
+          className='my-vwr-progress-wrapper'>
+          <CircularProgressbar
+            value={progress}
+            className='my-vwr-progress'/>
+        </motion.div>
       </div>
       <div className='my-vwr-footer'>
         {
