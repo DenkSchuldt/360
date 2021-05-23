@@ -22,11 +22,14 @@ const Viewer = props => {
   useEffect(() => {
     history.replace(`?id=${id}`);
     setIndex(idx + 1);
+    if (viewer) {
+      viewer.dispose();
+    }
     let pano = new window.PANOLENS.ImagePanorama(`${window.location.origin}/360/images/${src}`);
     pano.addEventListener('enter', () => setProgress(0));
     pano.addEventListener('progress', e => {
       const p = e.progress.loaded / e.progress.total * 100;
-      setProgress(p == 100 ? undefined : p);
+      setProgress(p === 100 ? undefined : p);
     });
     let v;
     if (viewer) {
@@ -94,11 +97,11 @@ const Viewer = props => {
         <motion.div
           initial={{ scale: 0 }}
           animate={{
-            scale: progress != undefined ? 1 : 0
+            scale: progress !== undefined ? 1 : 0
           }}
           className='my-vwr-progress-wrapper'>
           <CircularProgressbar
-            value={progress}
+            value={progress || 0}
             className='my-vwr-progress'/>
         </motion.div>
       </div>
