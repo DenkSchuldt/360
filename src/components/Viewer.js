@@ -95,9 +95,9 @@ const Viewer = props => {
           </a>
         }
         <motion.div
-          initial={{ scale: 0 }}
+          initial={{ opacity: 0 }}
           animate={{
-            scale: progress !== undefined ? 1 : 0
+            opacity: progress !== undefined ? 1 : 0
           }}
           className='my-vwr-progress-wrapper'>
           <CircularProgressbar

@@ -76,7 +76,8 @@ const App = () => {
             scale: (!isPrevVisible || isTagsDialogVisible) ? 0 : 1
           }}
           className='my-btn-left'>
-          <i className="fas fa-arrow-circle-left"></i>
+          <i className="fas fa-arrow-left"></i>
+          <span>Previa</span>
         </motion.button>
         <Viewer
           history={history}
@@ -94,7 +95,8 @@ const App = () => {
             scale: (!isNextVisible || isTagsDialogVisible) ? 0 : 1
           }}
           className='my-btn-right'>
-          <i className="fas fa-arrow-circle-right"></i>
+          <span>Siguiente</span>
+          <i className="fas fa-arrow-right"></i>
         </motion.button>
       </main>
       {
