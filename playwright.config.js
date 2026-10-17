@@ -10,11 +10,27 @@ export default defineConfig({
     baseURL: 'http://127.0.0.1:4173/360/',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
-    launchOptions: { args: ['--enable-unsafe-swiftshader'] },
   },
   projects: [
-    { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
-    { name: 'mobile', use: { ...devices['Pixel 7'] } },
+    {
+      name: 'desktop',
+      use: {
+        ...devices['Desktop Chrome'],
+        launchOptions: { args: ['--enable-unsafe-swiftshader'] },
+      },
+    },
+    {
+      name: 'mobile',
+      use: {
+        ...devices['Pixel 7'],
+        launchOptions: { args: ['--enable-unsafe-swiftshader'] },
+      },
+    },
+    {
+      name: 'iphone-webkit',
+      testMatch: /viewport\.spec\.js/,
+      use: { ...devices['iPhone 13'], browserName: 'webkit' },
+    },
   ],
   webServer: {
     command: 'npm run preview -- --host 127.0.0.1 --port 4173 --strictPort',

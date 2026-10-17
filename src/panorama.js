@@ -43,7 +43,7 @@ export function createPanoramaViewer(container) {
   controls.enablePan = false;
   controls.enableZoom = false;
   controls.touches.TWO = null;
-  controls.rotateSpeed = -0.15;
+  controls.rotateSpeed = -0.45;
   controls.enableDamping = true;
   controls.dampingFactor = 0.1;
   controls.autoRotateSpeed = 1;
