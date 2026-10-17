@@ -13,6 +13,7 @@ test.beforeEach(async ({ page }) => {
         constructor(options) {
           super(options);
           window.__galleryViewers.push(this);
+          this.widget?.fullscreenElement?.setAttribute('data-testid', 'panorama-fullscreen');
         }
       };
       const OriginalPanorama = window.PANOLENS.ImagePanorama;
@@ -43,6 +44,12 @@ test('loads real panoramas, navigates, filters, and keeps the dialog usable', as
   await expectLoadedPanorama(page);
   await expect(page.locator('.my-vwr-header strong')).toHaveText('Alausí');
   await page.screenshot({ path: test.info().outputPath('gallery.png') });
+  const fullscreen = page.getByTestId('panorama-fullscreen');
+  if (test.info().project.name === 'mobile') await fullscreen.tap();
+  else await fullscreen.click();
+  await expect.poll(() => page.evaluate(() => document.fullscreenElement?.id)).toBe('myVwr');
+  await expect(page.getByRole('link', { name: 'Ver ubicación en el mapa' })).toBeVisible();
+  await page.evaluate(() => document.exitFullscreen());
 
   await page.getByRole('button', { name: 'Siguiente', exact: true }).click();
   await expect(page.locator('.my-vwr-header strong')).toHaveText('Nariz del Diablo');

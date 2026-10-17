@@ -72,8 +72,8 @@ const Viewer = props => {
       </div>
       <div
         id='myVwr'
+        ref={containerRef}
         className='my-vwr'>
-        <div ref={containerRef} className='my-vwr-canvas' />
         {
           marker &&
           <a

@@ -25,13 +25,17 @@ describe('Viewer lifecycle under React StrictMode', () => {
   it('replaces panoramas without reusing destroyed viewers or leaking canvas nodes and listeners', () => {
     vi.stubEnv('BASE_URL', '/360/');
     const { container, rerender, unmount } = render(viewerElement(rawData[0]));
-    const viewport = container.querySelector('.my-vwr-canvas');
+    const viewport = container.querySelector('.my-vwr');
     const activeViewer = viewers.at(-1);
     const firstPanorama = panoramas.at(-1);
 
     expect(viewers).toHaveLength(2);
     expect(viewers[0].destroy).toHaveBeenCalledTimes(1);
     expect(activeViewer.destroy).not.toHaveBeenCalled();
+    // PANOLENS fullscreens its container, so React overlays must stay inside it.
+    expect(activeViewer.options.container).toBe(viewport);
+    expect(viewport).toContainElement(screen.getByLabelText('Ver ubicación en el mapa'));
+    expect(viewport.querySelector('.my-vwr-progress-wrapper')).not.toBeNull();
     expect(viewport.querySelectorAll('canvas')).toHaveLength(1);
     expect(viewport.querySelectorAll('.mock-panolens-toolbar')).toHaveLength(1);
     expect(firstPanorama.source).toBe(`/360/images/${rawData[0].src}`);
@@ -55,7 +59,7 @@ describe('Viewer lifecycle under React StrictMode', () => {
 
     unmount();
 
-    expect(viewport.childNodes).toHaveLength(0);
+    expect(viewport.querySelectorAll('canvas, .mock-panolens-toolbar')).toHaveLength(0);
     for (const viewer of viewers) {
       expect(viewer.destroy).toHaveBeenCalledTimes(1);
       expect(viewer.renderer.dispose).toHaveBeenCalledTimes(1);
