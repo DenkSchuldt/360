@@ -1,9 +1,8 @@
-
 build
 node_modules
 .DS_Store
 .tmp
-yarn.lock
 yarn-error.log
-package-lock.json
-.github
+coverage
+playwright-report
+test-results

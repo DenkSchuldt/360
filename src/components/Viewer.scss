@@ -66,6 +66,10 @@
     canvas {
       border-radius: 10px;
     }
+    .my-vwr-canvas {
+      width: 100%;
+      height: 100%;
+    }
     .my-vwr-marker {
       left: 14px;
       color: #fff;
@@ -79,6 +83,7 @@
       }
     }
     .my-vwr-progress-wrapper {
+      pointer-events: none;
       top: 0;
       left: 0;
       width: 100%;
@@ -190,3 +195,4 @@
     }
   }
 }
+

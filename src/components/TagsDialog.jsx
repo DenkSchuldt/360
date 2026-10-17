@@ -15,6 +15,9 @@ const TagsDialog = props => {
       title='Hashtags'
       draggable={false}
       confirmText='Aplicar'
+      cancelText='Cancelar'
+      closeOnEscPress
+      onCancelClick={onClose}
       className='dnk-tags-dialog'
       onConfirmClick={() => {
         setAnchoredTags(anchoredTags);
@@ -25,8 +28,8 @@ const TagsDialog = props => {
         {
           tags.map((tag, idx) => (
             <motion.span
-              key={idx}
-              layoutTransition
+              key={tag}
+              layout
               className='dnk-tag'
               onClick={() => {
                 setTags(
@@ -56,3 +59,4 @@ const TagsDialog = props => {
 }
 
 export default TagsDialog;
+
