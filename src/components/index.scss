@@ -7,7 +7,7 @@ main {
   position: relative;
   align-items: center;
   height: calc(100vh - 56px);
-  button {
+  > button {
     margin: 0;
     z-index: 1;
     color: #fff;
@@ -60,7 +60,7 @@ main {
     top: 56px;
     width: 100%;
     position: absolute;
-    button {
+    > button {
       &.my-btn-left {
         left: 12px;
         .lucide {

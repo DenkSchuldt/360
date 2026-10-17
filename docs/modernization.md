@@ -42,9 +42,10 @@ source change is not used as a dependency until it is published.
 - Replace Font Awesome entirely with local Lucide React SVG icons, as requested.
   Real-browser tests exposed that unavailable kit requests made the icon-only
   map/filter controls invisible. Lucide 1 does not ship brand logos, so the same
-  social links use CodeXml, MessageCircle and Camera with explicit titles and
-  accessible names; map, navigation, pin and filter controls use matching Lucide
-  symbols. No icon kit, icon font, or Font Awesome dependency remains.
+  social links now use three local, monochrome GitHub/X/Instagram SVG icons from
+  Simple Icons with explicit accessible names; map, navigation, pin and filter
+  controls keep Lucide symbols. Brand-source and license notes are stored beside
+  the SVG assets. No icon kit, icon font, or Font Awesome dependency remains.
 - Remove the `gh-pages` deploy helper and deploy scripts. Latest 6.3.0 pulls in
   `braces` through `globby`/`fast-glob`/`micromatch`, with the unpatched advisory
   [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm).
@@ -78,6 +79,9 @@ are preserved, as are navigation, filtering, map links and the React UI.
 - A single canvas/renderer is reused across photos. Stale texture callbacks are
   ignored and disposed. Unmount disposes textures, material, geometry, renderer,
   controls, observers, listeners, idle timers and animation frames.
+- Scope navigation-button CSS to direct children of main so it cannot overlap
+  the new toolbar. Center the date/hashtag/plus row and keep 44px controls clear
+  of the mobile footer.
 - Fullscreen includes React overlays. Image failures offer a retry; unsupported
   WebGL 2 browsers receive an explanatory message instead of a blank viewer.
 - The user chose the simple normal panorama experience. The old PANOLENS

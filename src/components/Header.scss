@@ -16,26 +16,33 @@
     font-size: 22px;
     font-weight: bold;
   }
-  a {
-    color: #fff;
-    .lucide {
+  .social-links {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 4px;
+    a {
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       padding: 8px;
-      margin-left: 4px;
       cursor: pointer;
-      vertical-align: middle;
       border-radius: 10px;
       transition: background-color var(--seconds) ease;
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.2)
+      &:hover, &:focus-visible {
+        background-color: rgba(0, 0, 0, 0.2);
       }
+    }
+    .brand-icon {
+      display: block;
+      flex-shrink: 0;
     }
   }
 }
 
-@media only screen and (max-width: 650px) {
-  my-header {
-    z-index: 1;
-    position: absolute;
+@media only screen and (max-width: 400px) {
+  .my-header {
     h1 {
       font-size: 16px;
     }

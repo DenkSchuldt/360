@@ -37,6 +37,32 @@ async function expectLoadedPanorama(page) {
   await expect(page.locator('.my-vwr canvas')).toHaveCount(1);
 }
 
+async function expectAlignedControls(page) {
+  await expect(page.locator('.social-links .brand-icon')).toHaveCount(3);
+  await expect.poll(() => page.locator('.social-links .brand-icon').evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0))).toBe(true);
+  for (const name of ['GitHub de Denny Schuldt', 'X de Denny Schuldt', 'Instagram de Denny Schuldt']) {
+    await expect(page.getByRole('link', { name, exact: true })).toBeVisible();
+  }
+  const centers = await page.locator('.my-vwr-footer .dnk-date, .my-vwr-footer .dnk-dot, .dnk-tags > .dnk-tag, .dnk-tags > .dnk-tag:last-child svg').evaluateAll(elements =>
+    elements.map(element => { const rect = element.getBoundingClientRect(); return rect.y + rect.height / 2; }),
+  );
+  expect(Math.max(...centers) - Math.min(...centers)).toBeLessThan(1.5);
+  const viewport = await page.locator('.my-vwr').boundingBox();
+  const buttons = page.locator('.panorama-controls button');
+  await expect(buttons).toHaveCount(4);
+  let previousRight = viewport.x;
+  for (let index = 0; index < 4; index++) {
+    await expect(buttons.nth(index)).toBeVisible();
+    const box = await buttons.nth(index).boundingBox();
+    expect(box.width).toBeGreaterThanOrEqual(44);
+    expect(box.height).toBeGreaterThanOrEqual(44);
+    expect(box.x).toBeGreaterThanOrEqual(previousRight);
+    expect(box.x + box.width).toBeLessThanOrEqual(viewport.x + viewport.width);
+    expect(box.y + box.height).toBeLessThanOrEqual(viewport.y + viewport.height);
+    previousRight = box.x + box.width;
+  }
+}
+
 test('loads real panoramas, navigates, filters, and keeps the dialog usable', async ({ page }) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -44,6 +70,7 @@ test('loads real panoramas, navigates, filters, and keeps the dialog usable', as
   await expect(page.getByRole('heading', { name: 'Aventuras en 360º' })).toBeVisible();
   await expectLoadedPanorama(page);
   await expect(page.locator('.my-vwr-header strong')).toHaveText('Alausí');
+  await expectAlignedControls(page);
   await page.screenshot({ path: test.info().outputPath('gallery.png') });
   const fullscreen = page.getByRole('button', { name: 'Pantalla completa', exact: true });
   if (test.info().project.name === 'mobile') await fullscreen.tap();
