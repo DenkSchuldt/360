@@ -72,8 +72,9 @@ are preserved, as are navigation, filtering, map links and the React UI.
 
 - Mouse/touch drag rotates the panorama; wheel and two-finger pinch change FOV
   between 30° and 120°, rather than moving the camera outside the sphere.
-- Accessible Lucide controls provide zoom, autorotation pause/resume and
-  fullscreen. Focus the panorama to use arrow keys and +/-.
+- Accessible Lucide controls provide zoom and autorotation pause/resume.
+  The fullscreen button was removed after the requested iPhone preview review.
+  Focus the panorama to use arrow keys and +/-.
 - Autorotation is frame-rate independent and resumes 10 seconds after
   interaction. It can be explicitly paused. Hidden tabs stop the render loop.
 - A single canvas/renderer is reused across photos. Stale texture callbacks are
@@ -82,14 +83,23 @@ are preserved, as are navigation, filtering, map links and the React UI.
 - Scope navigation-button CSS to direct children of main so it cannot overlap
   the new toolbar. Center the date/hashtag/plus row and keep 44px controls clear
   of the mobile footer.
-- Fullscreen includes React overlays. Image failures offer a retry; unsupported
-  WebGL 2 browsers receive an explanatory message instead of a blank viewer.
+- Image failures offer a retry; unsupported WebGL 2 browsers receive an
+  explanatory message instead of a blank viewer.
 - The user chose the simple normal panorama experience. The old PANOLENS
   sensor/Cardboard/stereoscopic settings menu is not part of this implementation;
   no device-motion permission is requested and no VR/headset support is claimed.
 - Current Three requires WebGL 2. This intentionally drops the legacy WebGL 1
   renderer path. The browser tests cover current Chromium desktop/mobile;
   physical iOS/Android sensor/headset behavior is outside this scope.
+
+### Memory ownership
+
+Changing photos detaches and disposes the previous GPU texture before loading
+its replacement; the scene, sphere geometry, material, renderer and canvas are
+reused. Late callbacks from superseded loads cannot attach a stale texture.
+This does not cancel an already-started image download or force browser image
+cache/decoded-image memory to disappear immediately. Browser-managed memory and
+transient decoding allocations are distinct from retained WebGL resources.
 
 Three is MIT licensed; its notice is included in `public/third-party-licenses/`.
 There is no panorama-viewer service or license fee. Removing the vendored global
@@ -102,5 +112,8 @@ scripts brings the engine into the npm lockfile and normal dependency auditing.
 - Adapter regression tests exercise real Three geometry/camera/OrbitControls,
   with only WebGL and image I/O mocked for deterministic jsdom checks.
 - Playwright checks real WebGL/image rendering and user flows on desktop and
-  mobile Chromium. CI has the complete original photo collection.
+  mobile Chromium. It also observes actual texture creation/deletion through six
+  sequential photo changes; this measures retained resource counts, not heap/RAM.
+  Unit regressions cover fifty replacements and final teardown. CI has the
+  complete original photo collection.
 - No changes to photos, visual identity, production hosting or publication.

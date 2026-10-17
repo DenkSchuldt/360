@@ -1,15 +1,13 @@
-
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Dialog from '@denkschuldt/react-dialog';
 import { Pin } from 'lucide-react';
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from 'framer-motion';
 
 import './TagsDialog.scss';
 
-
 const TagsDialog = props => {
   const { tags, onClose, setAnchoredTags } = props;
-  const [ anchoredTags, setTags ] = useState(props.anchoredTags);
+  const [anchoredTags, setTags] = useState(props.anchoredTags);
   return (
     <Dialog
       slideIn='bottom'
@@ -24,41 +22,40 @@ const TagsDialog = props => {
         setAnchoredTags(anchoredTags);
         onClose();
       }}
-      onCloseClick={onClose}>
+      onCloseClick={onClose}
+    >
       <div className='dnk-tags'>
-        {
-          tags.map((tag, idx) => (
-            <motion.span
-              key={tag}
-              layout
-              className='dnk-tag'
-              onClick={() => {
-                setTags(
-                  anchoredTags.includes(tag) ?
-                    anchoredTags.filter(t => t !== tag) :
-                    [ ...anchoredTags, tag]
-                )
-              }}>
-              {`#${tag}`}
-              <AnimatePresence>
-                {
-                  anchoredTags.includes(tag) &&
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                    className="dnk-pin">
-                    <Pin size={12} />
-                  </motion.span>
-                }
-              </AnimatePresence>
-            </motion.span>
-          ))
-        }
+        {tags.map(tag => (
+          <motion.span
+            key={tag}
+            layout
+            className='dnk-tag'
+            onClick={() => {
+              setTags(
+                anchoredTags.includes(tag)
+                  ? anchoredTags.filter(t => t !== tag)
+                  : [...anchoredTags, tag],
+              );
+            }}
+          >
+            {`#${tag}`}
+            <AnimatePresence>
+              {anchoredTags.includes(tag) && (
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0 }}
+                  className='dnk-pin'
+                >
+                  <Pin size={12} />
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </motion.span>
+        ))}
       </div>
     </Dialog>
   );
-}
+};
 
 export default TagsDialog;
-

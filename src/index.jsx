@@ -10,5 +10,5 @@ createRoot(document.getElementById('AventurasEn360')).render(
     <BrowserRouter basename={import.meta.env.BASE_URL}>
       <App />
     </BrowserRouter>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

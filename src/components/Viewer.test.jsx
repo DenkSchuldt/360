@@ -1,11 +1,16 @@
 import { StrictMode } from 'react';
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { describe, expect, it, vi } from 'vitest';
 import Viewer from './Viewer.jsx';
 import rawData from '../data.json';
-import { renderers, resizeObservers, setRendererFailure, textureRequests } from '../test/setup.js';
+import {
+  renderers,
+  resizeObservers,
+  setRendererFailure,
+  textureRequests,
+} from '../test/setup.js';
 
 function viewerElement(panorama, idx = 0) {
   return (
@@ -35,8 +40,12 @@ describe('Viewer lifecycle under React StrictMode', () => {
     expect(renderers).toHaveLength(2);
     expect(renderers[0].dispose).toHaveBeenCalledOnce();
     expect(activeRenderer.dispose).not.toHaveBeenCalled();
-    expect(viewport).toContainElement(screen.getByLabelText('Ver ubicación en el mapa'));
-    expect(viewport).toContainElement(screen.getByLabelText('Controles de panorámica'));
+    expect(viewport).toContainElement(
+      screen.getByLabelText('Ver ubicación en el mapa'),
+    );
+    expect(viewport).toContainElement(
+      screen.getByLabelText('Controles de panorámica'),
+    );
     expect(viewport.querySelector('.my-vwr-progress-wrapper')).not.toBeNull();
     expect(viewport.querySelectorAll('canvas')).toHaveLength(1);
     expect(firstRequest.source).toBe(`/360/images/${rawData[0].src}`);
@@ -54,13 +63,15 @@ describe('Viewer lifecycle under React StrictMode', () => {
     expect(viewport).toHaveAttribute('data-panorama-state', 'loading');
     expect(viewport).not.toHaveAttribute('data-panorama-source');
 
-    // Filtering can change the displayed position without changing the photo.
     const requestCount = textureRequests.length;
     rerender(viewerElement(rawData[1], 0));
     expect(screen.getByRole('spinbutton')).toHaveValue(1);
     expect(textureRequests).toHaveLength(requestCount);
     act(() => nextRequest.resolve());
-    expect(viewport).toHaveAttribute('data-panorama-source', nextRequest.source);
+    expect(viewport).toHaveAttribute(
+      'data-panorama-source',
+      nextRequest.source,
+    );
 
     unmount();
     expect(viewport.querySelectorAll('canvas')).toHaveLength(0);
@@ -69,8 +80,10 @@ describe('Viewer lifecycle under React StrictMode', () => {
       expect(renderer.dispose).toHaveBeenCalledOnce();
       expect(renderer.forceContextLoss).toHaveBeenCalledOnce();
     }
-    for (const observer of resizeObservers) expect(observer.disconnect).toHaveBeenCalledOnce();
-    for (const request of textureRequests) expect(request.texture.dispose).toHaveBeenCalledOnce();
+    for (const observer of resizeObservers)
+      expect(observer.disconnect).toHaveBeenCalledOnce();
+    for (const request of textureRequests)
+      expect(request.texture.dispose).toHaveBeenCalledOnce();
   });
 
   it('ignores stale progress, errors and load callbacks after a source change or unmount', () => {
@@ -91,7 +104,10 @@ describe('Viewer lifecycle under React StrictMode', () => {
     });
     expect(progress).toHaveAttribute('aria-hidden', 'true');
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-    expect(viewport).toHaveAttribute('data-panorama-source', nextRequest.source);
+    expect(viewport).toHaveAttribute(
+      'data-panorama-source',
+      nextRequest.source,
+    );
     expect(firstRequest.texture.dispose).toHaveBeenCalledOnce();
 
     unmount();
@@ -111,9 +127,14 @@ describe('Viewer lifecycle under React StrictMode', () => {
     const viewport = container.querySelector('.my-vwr');
     const failedRequest = textureRequests.at(-1);
     act(() => failedRequest.reject(new Error('Image not found')));
-    expect(screen.getByRole('alert')).toHaveTextContent('No se pudo cargar esta foto');
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'No se pudo cargar esta foto',
+    );
     expect(viewport).toHaveAttribute('data-panorama-state', 'error');
-    expect(viewport.querySelector('.my-vwr-progress-wrapper')).toHaveAttribute('aria-hidden', 'true');
+    expect(viewport.querySelector('.my-vwr-progress-wrapper')).toHaveAttribute(
+      'aria-hidden',
+      'true',
+    );
 
     const requestCount = textureRequests.length;
     await user.click(screen.getByRole('button', { name: 'Reintentar' }));
@@ -127,11 +148,27 @@ describe('Viewer lifecycle under React StrictMode', () => {
     expect(viewport).toHaveAttribute('data-panorama-state', 'ready');
   });
 
-  it('provides accessible zoom, automatic rotation and fullscreen controls inside the viewport', async () => {
+  it('provides exactly three accessible zoom and automatic rotation controls inside the viewport', async () => {
     const user = userEvent.setup();
     const updateControls = vi.spyOn(OrbitControls.prototype, 'update');
     const { container } = render(viewerElement(rawData[0]));
     const viewport = container.querySelector('.my-vwr');
+    const toolbar = within(screen.getByLabelText('Controles de panorámica'));
+    const buttons = toolbar.getAllByRole('button');
+    expect(buttons).toHaveLength(3);
+    for (const [index, name] of [
+      'Alejar',
+      'Acercar',
+      'Pausar autorrotación',
+    ].entries()) {
+      expect(buttons[index]).toHaveAccessibleName(name);
+    }
+    expect(
+      screen.queryByRole('button', { name: /pantalla completa/i }),
+    ).not.toBeInTheDocument();
+    expect(viewport).toContainElement(
+      screen.getByRole('link', { name: 'Ver ubicación en el mapa' }),
+    );
     act(() => textureRequests.at(-1).resolve());
     const renderer = renderers.at(-1);
     const controls = updateControls.mock.contexts.at(-1);
@@ -144,50 +181,31 @@ describe('Viewer lifecycle under React StrictMode', () => {
     expect(pause).toHaveAttribute('aria-pressed', 'true');
     await user.click(pause);
     expect(controls.autoRotate).toBe(false);
-    expect(screen.getByRole('button', { name: 'Activar autorrotación' })).toHaveAttribute('aria-pressed', 'false');
-    await user.click(screen.getByRole('button', { name: 'Activar autorrotación' }));
+    expect(
+      screen.getByRole('button', { name: 'Activar autorrotación' }),
+    ).toHaveAttribute('aria-pressed', 'false');
+    await user.click(
+      screen.getByRole('button', { name: 'Activar autorrotación' }),
+    );
     expect(controls.autoRotate).toBe(true);
-    const requestFullscreen = vi.fn().mockResolvedValue(undefined);
-    Object.defineProperty(viewport, 'requestFullscreen', { configurable: true, value: requestFullscreen });
-    await user.click(screen.getByRole('button', { name: 'Pantalla completa' }));
-    expect(requestFullscreen).toHaveBeenCalledOnce();
+    expect(
+      toolbar.getByRole('button', { name: 'Pausar autorrotación' }),
+    ).toHaveAttribute('aria-pressed', 'true');
+    expect(toolbar.getAllByRole('button')).toHaveLength(3);
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
   it('shows an accessible WebGL 2 fallback without leaving canvases or loading photos', () => {
     setRendererFailure(new Error('WebGL 2 unavailable'));
     const { container } = render(viewerElement(rawData[0]));
-    expect(screen.getByRole('alert')).toHaveTextContent('navegador compatible con WebGL 2');
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'navegador compatible con WebGL 2',
+    );
     expect(container.querySelector('canvas')).toBeNull();
     expect(textureRequests).toHaveLength(0);
     expect(resizeObservers).toHaveLength(0);
-    expect(screen.queryByRole('button', { name: 'Reintentar' })).not.toBeInTheDocument();
-  });
-
-  it('shows a dismissible fullscreen notice without offering image retry or reloading the photo', async () => {
-    const user = userEvent.setup();
-    const { container } = render(viewerElement(rawData[0]));
-    const viewport = container.querySelector('.my-vwr');
-    act(() => textureRequests.at(-1).resolve());
-    Object.defineProperty(viewport, 'requestFullscreen', {
-      configurable: true, value: vi.fn().mockRejectedValue(new Error('Fullscreen blocked')),
-    });
-    const requestCount = textureRequests.length;
-    const loadedRequest = textureRequests.at(-1);
-    await user.click(screen.getByRole('button', { name: 'Pantalla completa' }));
-    expect(await screen.findByRole('status')).toHaveTextContent('no permite activar pantalla completa');
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Reintentar' })).not.toBeInTheDocument();
-    expect(textureRequests).toHaveLength(requestCount);
-    expect(loadedRequest.texture.dispose).not.toHaveBeenCalled();
-    expect(viewport).toHaveAttribute('data-panorama-state', 'ready');
-    expect(viewport).toHaveAttribute('data-panorama-source', loadedRequest.source);
-    expect(viewport.querySelectorAll('canvas')).toHaveLength(1);
-
-    await user.click(screen.getByRole('button', { name: 'Cerrar aviso' }));
-    expect(screen.queryByRole('status')).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Cerrar aviso' })).not.toBeInTheDocument();
-    expect(textureRequests).toHaveLength(requestCount);
-    expect(viewport).toHaveAttribute('data-panorama-state', 'ready');
+    expect(
+      screen.queryByRole('button', { name: 'Reintentar' }),
+    ).not.toBeInTheDocument();
   });
 });

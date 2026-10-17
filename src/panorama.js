@@ -1,6 +1,14 @@
 import {
-  BackSide, MathUtils, Mesh, MeshBasicMaterial, PerspectiveCamera,
-  Scene, SphereGeometry, SRGBColorSpace, TextureLoader, WebGLRenderer,
+  BackSide,
+  MathUtils,
+  Mesh,
+  MeshBasicMaterial,
+  PerspectiveCamera,
+  Scene,
+  SphereGeometry,
+  SRGBColorSpace,
+  TextureLoader,
+  WebGLRenderer,
 } from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -8,22 +16,21 @@ const MIN_FOV = 30;
 const MAX_FOV = 120;
 const IDLE_DELAY = 10000;
 
-/** A photo-only 360 viewer. React owns the surrounding UI and overlays. */
 export function createPanoramaViewer(container) {
-  // Construct the WebGL2 renderer before allocating other resources so unsupported
-  // browsers can show React's fallback without leaving listeners or a canvas.
   const renderer = new WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   const canvas = renderer.domElement;
   canvas.className = 'panorama-canvas';
   canvas.tabIndex = 0;
   canvas.setAttribute('role', 'img');
-  canvas.setAttribute('aria-label', 'Foto panorámica 360. Arrastra para explorar; usa las flechas y los controles para acercar.');
+  canvas.setAttribute(
+    'aria-label',
+    'Foto panorámica 360. Arrastra para explorar; usa las flechas y los controles para acercar.',
+  );
   container.append(canvas);
 
   const scene = new Scene();
   const camera = new PerspectiveCamera(65, 1, 1, 11000);
-  // Match the original gallery's framing and horizontal image orientation.
   camera.position.set(500, -100, 1);
   const geometry = new SphereGeometry(5000, 60, 40);
   const material = new MeshBasicMaterial({ side: BackSide });
@@ -34,11 +41,9 @@ export function createPanoramaViewer(container) {
 
   const controls = new OrbitControls(camera, canvas);
   controls.enablePan = false;
-  controls.enableZoom = false; // A panorama zoom changes FOV, not camera distance.
-  // Two-finger gestures belong to the custom FOV pinch handler below.
-  // Leaving OrbitControls' DOLLY_PAN default can keep stale one-finger state.
+  controls.enableZoom = false;
   controls.touches.TWO = null;
-  controls.rotateSpeed = -0.15; // Drag the image naturally, as in the original viewer.
+  controls.rotateSpeed = -0.15;
   controls.enableDamping = true;
   controls.dampingFactor = 0.1;
   controls.autoRotateSpeed = 1;
@@ -98,9 +103,15 @@ export function createPanoramaViewer(container) {
     pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
     const distance = getPinchDistance();
     if (pinchDistance > 0 && distance > 0) {
-      zoomBy(MathUtils.radToDeg(2 * Math.atan(
-        Math.tan(MathUtils.degToRad(camera.fov) / 2) * pinchDistance / distance,
-      )) - camera.fov);
+      zoomBy(
+        MathUtils.radToDeg(
+          2 *
+            Math.atan(
+              (Math.tan(MathUtils.degToRad(camera.fov) / 2) * pinchDistance) /
+                distance,
+            ),
+        ) - camera.fov,
+      );
     }
     pinchDistance = distance;
   }
@@ -111,7 +122,13 @@ export function createPanoramaViewer(container) {
   }
   function wheel(event) {
     event.preventDefault();
-    const pixels = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? canvas.clientHeight : 1);
+    const pixels =
+      event.deltaY *
+      (event.deltaMode === 1
+        ? 16
+        : event.deltaMode === 2
+          ? canvas.clientHeight
+          : 1);
     zoomBy(MathUtils.clamp(pixels * 0.05, -10, 10));
   }
   function keyDown(event) {
@@ -121,7 +138,9 @@ export function createPanoramaViewer(container) {
       ArrowRight: () => controls.rotateLeft(angle),
       ArrowUp: () => controls.rotateUp(-angle),
       ArrowDown: () => controls.rotateUp(angle),
-      '+': () => zoomBy(-5), '=': () => zoomBy(-5), '-': () => zoomBy(5),
+      '+': () => zoomBy(-5),
+      '=': () => zoomBy(-5),
+      '-': () => zoomBy(5),
     };
     if (actions[event.key]) {
       event.preventDefault();
@@ -145,16 +164,18 @@ export function createPanoramaViewer(container) {
     camera.updateProjectionMatrix();
     renderer.setSize(width, height, false);
   }
-  const observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(resize);
+  const observer =
+    typeof ResizeObserver === 'undefined'
+      ? undefined
+      : new ResizeObserver(resize);
   observer?.observe(container);
   window.addEventListener('resize', resize);
-  document.addEventListener('fullscreenchange', resize);
   resize();
 
   function animate(time) {
     if (destroyed) return;
-    // Delta keeps autorotation independent of refresh rate; cap after tab sleep.
-    const delta = lastTime === undefined ? 0 : Math.min((time - lastTime) / 1000, 0.1);
+    const delta =
+      lastTime === undefined ? 0 : Math.min((time - lastTime) / 1000, 0.1);
     lastTime = time;
     controls.update(delta);
     renderer.render(scene, camera);
@@ -163,19 +184,22 @@ export function createPanoramaViewer(container) {
   function visibilityChange() {
     cancelAnimationFrame(animationFrame);
     lastTime = undefined;
-    if (!document.hidden && !destroyed) animationFrame = requestAnimationFrame(animate);
+    if (!document.hidden && !destroyed)
+      animationFrame = requestAnimationFrame(animate);
   }
   document.addEventListener('visibilitychange', visibilityChange);
   animationFrame = requestAnimationFrame(animate);
 
   return {
     load(src, onProgress = () => {}, onError = () => {}) {
-      if (destroyed) throw new Error('Cannot load a panorama into a disposed viewer.');
+      if (destroyed)
+        throw new Error('Cannot load a panorama into a disposed viewer.');
       disposeLoad?.();
       const currentGeneration = ++generation;
       let cancelled = false;
       let texture;
-      const isCurrent = () => !destroyed && !cancelled && generation === currentGeneration;
+      const isCurrent = () =>
+        !destroyed && !cancelled && generation === currentGeneration;
       container.dataset.panoramaState = 'loading';
       delete container.dataset.panoramaSource;
       onProgress(0);
@@ -190,29 +214,36 @@ export function createPanoramaViewer(container) {
         if (disposeLoad === cleanup) disposeLoad = undefined;
       };
       disposeLoad = cleanup;
-      texture = new TextureLoader().load(src, loadedTexture => {
-        if (!isCurrent()) {
-          disposeTexture(loadedTexture);
-          return;
-        }
-        loadedTexture.colorSpace = SRGBColorSpace;
-        material.map = loadedTexture;
-        material.needsUpdate = true;
-        sphere.visible = true;
-        renderer.render(scene, camera);
-        container.dataset.panoramaState = 'ready';
-        container.dataset.panoramaSource = src;
-        onProgress(undefined);
-      }, event => {
-        if (isCurrent() && event.total > 0) {
-          onProgress(Math.min(99, event.loaded / event.total * 100));
-        }
-      }, () => {
-        if (!isCurrent()) return;
-        container.dataset.panoramaState = 'error';
-        onProgress(undefined);
-        onError('No se pudo cargar esta foto. Reintenta o elige otra panorámica.');
-      });
+      texture = new TextureLoader().load(
+        src,
+        loadedTexture => {
+          if (!isCurrent()) {
+            disposeTexture(loadedTexture);
+            return;
+          }
+          loadedTexture.colorSpace = SRGBColorSpace;
+          material.map = loadedTexture;
+          material.needsUpdate = true;
+          sphere.visible = true;
+          renderer.render(scene, camera);
+          container.dataset.panoramaState = 'ready';
+          container.dataset.panoramaSource = src;
+          onProgress(undefined);
+        },
+        event => {
+          if (isCurrent() && event.total > 0) {
+            onProgress(Math.min(99, (event.loaded / event.total) * 100));
+          }
+        },
+        () => {
+          if (!isCurrent()) return;
+          container.dataset.panoramaState = 'error';
+          onProgress(undefined);
+          onError(
+            'No se pudo cargar esta foto. Reintenta o elige otra panorámica.',
+          );
+        },
+      );
       return cleanup;
     },
     zoomBy,
@@ -222,12 +253,6 @@ export function createPanoramaViewer(container) {
       pauseRotation();
       controls.autoRotate = enabled && pointers.size === 0;
     },
-    async toggleFullscreen() {
-      if (destroyed) return;
-      if (document.fullscreenElement === container) await document.exitFullscreen();
-      else if (container.requestFullscreen) await container.requestFullscreen();
-      else throw new Error('Este navegador no admite pantalla completa.');
-    },
     dispose() {
       if (destroyed) return;
       destroyed = true;
@@ -236,7 +261,6 @@ export function createPanoramaViewer(container) {
       cancelAnimationFrame(animationFrame);
       observer?.disconnect();
       window.removeEventListener('resize', resize);
-      document.removeEventListener('fullscreenchange', resize);
       document.removeEventListener('visibilitychange', visibilityChange);
       canvas.removeEventListener('pointerdown', pointerDown);
       canvas.removeEventListener('pointermove', pointerMove);

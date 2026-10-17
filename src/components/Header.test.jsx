@@ -15,11 +15,15 @@ const profiles = [
 describe('social profile links', () => {
   it('uses the corresponding local brand logos and accessible profile names', () => {
     render(<Header />);
-    const navigation = screen.getByRole('navigation', { name: 'Redes sociales' });
+    const navigation = screen.getByRole('navigation', {
+      name: 'Redes sociales',
+    });
     expect(within(navigation).getAllByRole('link')).toHaveLength(3);
 
     for (const [brand, destination, logo] of profiles) {
-      const link = within(navigation).getByRole('link', { name: `${brand} de Denny Schuldt` });
+      const link = within(navigation).getByRole('link', {
+        name: `${brand} de Denny Schuldt`,
+      });
       expect(link).toHaveAttribute('href', destination);
       expect(link).toHaveAttribute('title', brand);
       expect(link).toHaveAttribute('target', '_blank');
@@ -33,7 +37,9 @@ describe('social profile links', () => {
     }
     expect(navigation.querySelector('.lucide')).not.toBeInTheDocument();
     expect(within(navigation).queryByRole('img')).not.toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: /Twitter/ })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: /Twitter/ }),
+    ).not.toBeInTheDocument();
   });
 
   it('keeps all three profiles reachable in keyboard order', async () => {
@@ -41,7 +47,9 @@ describe('social profile links', () => {
     render(<Header />);
     for (const [brand] of profiles) {
       await user.tab();
-      expect(screen.getByRole('link', { name: `${brand} de Denny Schuldt` })).toHaveFocus();
+      expect(
+        screen.getByRole('link', { name: `${brand} de Denny Schuldt` }),
+      ).toHaveFocus();
     }
   });
 });

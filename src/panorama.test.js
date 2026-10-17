@@ -36,11 +36,17 @@ describe('native Three panorama adapter', () => {
     controllers = [];
     time = 0;
     let nextFrame = 0;
-    vi.stubGlobal('requestAnimationFrame', vi.fn(callback => {
-      frames.set(++nextFrame, callback);
-      return nextFrame;
-    }));
-    vi.stubGlobal('cancelAnimationFrame', vi.fn(id => frames.delete(id)));
+    vi.stubGlobal(
+      'requestAnimationFrame',
+      vi.fn(callback => {
+        frames.set(++nextFrame, callback);
+        return nextFrame;
+      }),
+    );
+    vi.stubGlobal(
+      'cancelAnimationFrame',
+      vi.fn(id => frames.delete(id)),
+    );
     controlsUpdate = vi.spyOn(OrbitControls.prototype, 'update');
     controlsDispose = vi.spyOn(OrbitControls.prototype, 'dispose');
     container = document.createElement('div');
@@ -54,8 +60,6 @@ describe('native Three panorama adapter', () => {
   afterEach(() => {
     controllers.forEach(viewer => viewer.dispose());
     container.remove();
-    delete document.fullscreenElement;
-    delete document.exitFullscreen;
     delete document.hidden;
   });
 
@@ -86,11 +90,56 @@ describe('native Three panorama adapter', () => {
     expect(renderers).toHaveLength(1);
     expect(first.texture.dispose).toHaveBeenCalledOnce();
     expect(second.texture.dispose).not.toHaveBeenCalled();
-    expect(renderer.scene.children.find(child => child.isMesh).material.map).toBe(second.texture);
+    expect(
+      renderer.scene.children.find(child => child.isMesh).material.map,
+    ).toBe(second.texture);
     expect(frames.size).toBe(1);
     cleanupSecond();
     cleanupSecond();
     expect(second.texture.dispose).toHaveBeenCalledOnce();
+  });
+
+  it('keeps one live photo texture and reuses GPU resources across fifty sequential photos', () => {
+    const viewer = createViewer();
+    const renderer = renderers[0];
+    const mesh = renderer.scene.children.find(child => child.isMesh);
+    const { geometry, material } = mesh;
+    const disposeGeometry = vi.spyOn(geometry, 'dispose');
+    const disposeMaterial = vi.spyOn(material, 'dispose');
+
+    for (let index = 0; index < 50; index++) {
+      viewer.load(`/photo-${index}.jpg`);
+      const current = textureRequests.at(-1);
+      current.resolve();
+      frame();
+
+      expect(renderers).toHaveLength(1);
+      expect(container.querySelectorAll('canvas')).toHaveLength(1);
+      expect(renderer.scene.children.find(child => child.isMesh)).toBe(mesh);
+      expect(mesh.geometry).toBe(geometry);
+      expect(mesh.material).toBe(material);
+      expect(material.map).toBe(current.texture);
+      expect(
+        textureRequests.filter(
+          request => request.texture.dispose.mock.calls.length === 0,
+        ),
+      ).toEqual([current]);
+      for (const previous of textureRequests.slice(0, -1))
+        expect(previous.texture.dispose).toHaveBeenCalledOnce();
+      expect(disposeGeometry).not.toHaveBeenCalled();
+      expect(disposeMaterial).not.toHaveBeenCalled();
+      expect(frames.size).toBe(1);
+    }
+
+    viewer.dispose();
+    for (const request of textureRequests)
+      expect(request.texture.dispose).toHaveBeenCalledOnce();
+    expect(disposeGeometry).toHaveBeenCalledOnce();
+    expect(disposeMaterial).toHaveBeenCalledOnce();
+    expect(renderer.dispose).toHaveBeenCalledOnce();
+    expect(renderer.forceContextLoss).toHaveBeenCalledOnce();
+    expect(container.querySelector('canvas')).toBeNull();
+    expect(frames.size).toBe(0);
   });
 
   it('disposes GPU resources, controls, listeners, resize observer, pending timers and RAF exactly once', () => {
@@ -105,10 +154,15 @@ describe('native Three panorama adapter', () => {
     const mesh = renderer.scene.children.find(child => child.isMesh);
     const disposeGeometry = vi.spyOn(mesh.geometry, 'dispose');
     const disposeMaterial = vi.spyOn(mesh.material, 'dispose');
-    renderer.domElement.dispatchEvent(new WheelEvent('wheel', { deltaY: 1, cancelable: true }));
+    renderer.domElement.dispatchEvent(
+      new WheelEvent('wheel', { deltaY: 1, cancelable: true }),
+    );
     expect(vi.getTimerCount()).toBeGreaterThan(0);
     const pendingFrame = [...frames.values()][0];
-    const ownedListeners = added.mock.calls.map((args, index) => ({ target: added.mock.contexts[index], args }));
+    const ownedListeners = added.mock.calls.map((args, index) => ({
+      target: added.mock.contexts[index],
+      args,
+    }));
 
     viewer.dispose();
     viewer.dispose();
@@ -124,14 +178,22 @@ describe('native Three panorama adapter', () => {
     expect(vi.getTimerCount()).toBe(0);
     expect(() => viewer.load('/after-disposal.jpg')).toThrow(/disposed/i);
 
-    // All application and OrbitControls DOM registrations must be removed with
-    // the same event type, callback and capture flag.
-    const capture = options => typeof options === 'boolean' ? options : Boolean(options?.capture);
-    for (const { target, args: [type, callback, options] } of ownedListeners) {
-      expect(removed.mock.calls.some(([removedType, removedCallback, removedOptions], index) =>
-        removed.mock.contexts[index] === target && removedType === type && removedCallback === callback &&
-        capture(removedOptions) === capture(options),
-      ), `unremoved ${type} listener`).toBe(true);
+    const capture = options =>
+      typeof options === 'boolean' ? options : Boolean(options?.capture);
+    for (const {
+      target,
+      args: [type, callback, options],
+    } of ownedListeners) {
+      expect(
+        removed.mock.calls.some(
+          ([removedType, removedCallback, removedOptions], index) =>
+            removed.mock.contexts[index] === target &&
+            removedType === type &&
+            removedCallback === callback &&
+            capture(removedOptions) === capture(options),
+        ),
+        `unremoved ${type} listener`,
+      ).toBe(true);
     }
     renderer.render.mockClear();
     pendingFrame(time + 16);
@@ -181,7 +243,9 @@ describe('native Three panorama adapter', () => {
     expect(onProgress).not.toHaveBeenCalled();
     expect(onError).not.toHaveBeenCalled();
     frame();
-    expect(renderers[0].scene.children.find(child => child.isMesh).material.map).toBe(replacement.texture);
+    expect(
+      renderers[0].scene.children.find(child => child.isMesh).material.map,
+    ).toBe(replacement.texture);
 
     viewer.load('/unmounted.jpg', onProgress, onError);
     const pending = textureRequests[2];
@@ -240,7 +304,9 @@ describe('native Three panorama adapter', () => {
     viewer.load('/working.jpg', onProgress, onError);
     textureRequests[1].resolve();
     frame();
-    expect(renderers[0].scene.children.find(child => child.isMesh).material.map).toBe(textureRequests[1].texture);
+    expect(
+      renderers[0].scene.children.find(child => child.isMesh).material.map,
+    ).toBe(textureRequests[1].texture);
     expect(onError).toHaveBeenCalledOnce();
   });
 
@@ -263,7 +329,14 @@ describe('native Three panorama adapter', () => {
     const controls = activeControls();
     expect(controls.autoRotate).toBe(true);
     const canvas = renderers[0].domElement;
-    canvas.dispatchEvent(new PointerEvent('pointerdown', { pointerId: 1, clientX: 300, clientY: 200, button: 0 }));
+    canvas.dispatchEvent(
+      new PointerEvent('pointerdown', {
+        pointerId: 1,
+        clientX: 300,
+        clientY: 200,
+        button: 0,
+      }),
+    );
     expect(controls.autoRotate).toBe(false);
     vi.advanceTimersByTime(20000);
     expect(controls.autoRotate).toBe(false);
@@ -273,7 +346,14 @@ describe('native Three panorama adapter', () => {
     vi.advanceTimersByTime(1);
     expect(controls.autoRotate).toBe(true);
 
-    canvas.dispatchEvent(new PointerEvent('pointerdown', { pointerId: 2, clientX: 300, clientY: 200, button: 0 }));
+    canvas.dispatchEvent(
+      new PointerEvent('pointerdown', {
+        pointerId: 2,
+        clientX: 300,
+        clientY: 200,
+        button: 0,
+      }),
+    );
     canvas.dispatchEvent(new PointerEvent('pointerup', { pointerId: 2 }));
     viewer.setAutoRotate(false);
     vi.advanceTimersByTime(20000);
@@ -290,31 +370,60 @@ describe('native Three panorama adapter', () => {
     expect(controls.rotateSpeed).toBe(-0.15);
     const originalAzimuth = controls.getAzimuthalAngle();
     const originalDirection = camera.quaternion.clone();
-    canvas.dispatchEvent(new PointerEvent('pointerdown', {
-      bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: 400, clientY: 200, button: 0,
-    }));
-    canvas.dispatchEvent(new PointerEvent('pointermove', {
-      bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: 500, clientY: 240, button: 0,
-    }));
-    canvas.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: 1, pointerType: 'mouse' }));
+    canvas.dispatchEvent(
+      new PointerEvent('pointerdown', {
+        bubbles: true,
+        pointerId: 1,
+        pointerType: 'mouse',
+        clientX: 400,
+        clientY: 200,
+        button: 0,
+      }),
+    );
+    canvas.dispatchEvent(
+      new PointerEvent('pointermove', {
+        bubbles: true,
+        pointerId: 1,
+        pointerType: 'mouse',
+        clientX: 500,
+        clientY: 240,
+        button: 0,
+      }),
+    );
+    canvas.dispatchEvent(
+      new PointerEvent('pointerup', {
+        bubbles: true,
+        pointerId: 1,
+        pointerType: 'mouse',
+      }),
+    );
     frame();
     expect(camera.quaternion.equals(originalDirection)).toBe(false);
     expect(controls.getAzimuthalAngle()).toBeGreaterThan(originalAzimuth);
     const afterDrag = camera.quaternion.clone();
-    const arrow = new KeyboardEvent('keydown', { key: 'ArrowLeft', cancelable: true });
+    const arrow = new KeyboardEvent('keydown', {
+      key: 'ArrowLeft',
+      cancelable: true,
+    });
     canvas.dispatchEvent(arrow);
     frame();
     expect(arrow.defaultPrevented).toBe(true);
     expect(camera.quaternion.equals(afterDrag)).toBe(false);
-    expect([...camera.position, ...camera.quaternion].every(Number.isFinite)).toBe(true);
+    expect(
+      [...camera.position, ...camera.quaternion].every(Number.isFinite),
+    ).toBe(true);
 
     const wheel = new WheelEvent('wheel', { deltaY: -100, cancelable: true });
     canvas.dispatchEvent(wheel);
     expect(wheel.defaultPrevented).toBe(true);
     expect(camera.fov).toBe(60);
-    canvas.dispatchEvent(new KeyboardEvent('keydown', { key: '+', cancelable: true }));
+    canvas.dispatchEvent(
+      new KeyboardEvent('keydown', { key: '+', cancelable: true }),
+    );
     expect(camera.fov).toBe(55);
-    canvas.dispatchEvent(new KeyboardEvent('keydown', { key: '-', cancelable: true }));
+    canvas.dispatchEvent(
+      new KeyboardEvent('keydown', { key: '-', cancelable: true }),
+    );
     expect(camera.fov).toBe(60);
   });
 
@@ -323,68 +432,121 @@ describe('native Three panorama adapter', () => {
     ['ArrowLeft', [1, 0, 0], -1],
     ['ArrowUp', [0, 1, 0], 1],
     ['ArrowDown', [0, 1, 0], -1],
-  ])('%s moves the viewing direction toward the matching screen edge', (key, axis, sign) => {
-    const viewer = createViewer();
-    viewer.setAutoRotate(false);
-    const controls = activeControls();
-    // Clear inertia before measuring the keyboard input in the camera's own
-    // right/up basis. An inward-facing panorama reverses ordinary orbit signs.
-    controls.enableDamping = false;
-    controls.update(0);
-    const { camera, domElement: canvas } = renderers[0];
-    const screenAxis = new Vector3(...axis).applyQuaternion(camera.quaternion);
-    const before = camera.getWorldDirection(new Vector3());
-    canvas.dispatchEvent(new KeyboardEvent('keydown', { key, cancelable: true }));
-    const movement = camera.getWorldDirection(new Vector3()).sub(before);
-    expect(movement.dot(screenAxis) * sign).toBeGreaterThan(0.04);
-  });
+  ])(
+    '%s moves the viewing direction toward the matching screen edge',
+    (key, axis, sign) => {
+      const viewer = createViewer();
+      viewer.setAutoRotate(false);
+      const controls = activeControls();
+      controls.enableDamping = false;
+      controls.update(0);
+      const { camera, domElement: canvas } = renderers[0];
+      const screenAxis = new Vector3(...axis).applyQuaternion(
+        camera.quaternion,
+      );
+      const before = camera.getWorldDirection(new Vector3());
+      canvas.dispatchEvent(
+        new KeyboardEvent('keydown', { key, cancelable: true }),
+      );
+      const movement = camera.getWorldDirection(new Vector3()).sub(before);
+      expect(movement.dot(screenAxis) * sign).toBeGreaterThan(0.04);
+    },
+  );
 
   it('zooms with two-finger pinch while keeping the camera distance fixed', () => {
     const viewer = createViewer();
     viewer.setAutoRotate(false);
     const { camera, domElement: canvas } = renderers[0];
     const distance = camera.position.length();
-    canvas.dispatchEvent(new PointerEvent('pointerdown', {
-      bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 300, clientY: 200,
-    }));
-    canvas.dispatchEvent(new PointerEvent('pointerdown', {
-      bubbles: true, pointerId: 2, pointerType: 'touch', clientX: 500, clientY: 200,
-    }));
+    canvas.dispatchEvent(
+      new PointerEvent('pointerdown', {
+        bubbles: true,
+        pointerId: 1,
+        pointerType: 'touch',
+        clientX: 300,
+        clientY: 200,
+      }),
+    );
+    canvas.dispatchEvent(
+      new PointerEvent('pointerdown', {
+        bubbles: true,
+        pointerId: 2,
+        pointerType: 'touch',
+        clientX: 500,
+        clientY: 200,
+      }),
+    );
     const beforePinch = camera.quaternion.toArray();
-    // Starting a second touch must leave OrbitControls' one-finger rotation
-    // state; an unchanged touch position must not rotate the view or zoom.
-    canvas.dispatchEvent(new PointerEvent('pointermove', {
-      bubbles: true, pointerId: 2, pointerType: 'touch', clientX: 500, clientY: 200,
-    }));
+    canvas.dispatchEvent(
+      new PointerEvent('pointermove', {
+        bubbles: true,
+        pointerId: 2,
+        pointerType: 'touch',
+        clientX: 500,
+        clientY: 200,
+      }),
+    );
     expect(camera.quaternion.toArray()).toEqual(beforePinch);
     expect(camera.fov).toBe(65);
-    canvas.dispatchEvent(new PointerEvent('pointermove', {
-      bubbles: true, pointerId: 2, pointerType: 'touch', clientX: 600, clientY: 200,
-    }));
+    canvas.dispatchEvent(
+      new PointerEvent('pointermove', {
+        bubbles: true,
+        pointerId: 2,
+        pointerType: 'touch',
+        clientX: 600,
+        clientY: 200,
+      }),
+    );
     expect(camera.fov).toBeLessThan(65);
     expect(camera.quaternion.toArray()).toEqual(beforePinch);
-    canvas.dispatchEvent(new PointerEvent('pointermove', {
-      bubbles: true, pointerId: 2, pointerType: 'touch', clientX: 400, clientY: 200,
-    }));
+    canvas.dispatchEvent(
+      new PointerEvent('pointermove', {
+        bubbles: true,
+        pointerId: 2,
+        pointerType: 'touch',
+        clientX: 400,
+        clientY: 200,
+      }),
+    );
     expect(camera.fov).toBeGreaterThan(65);
     expect(camera.position.length()).toBeCloseTo(distance);
-    expect([...camera.position, ...camera.quaternion].every(Number.isFinite)).toBe(true);
-    canvas.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: 1, pointerType: 'touch' }));
-    canvas.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: 2, pointerType: 'touch' }));
+    expect(
+      [...camera.position, ...camera.quaternion].every(Number.isFinite),
+    ).toBe(true);
+    canvas.dispatchEvent(
+      new PointerEvent('pointerup', {
+        bubbles: true,
+        pointerId: 1,
+        pointerType: 'touch',
+      }),
+    );
+    canvas.dispatchEvent(
+      new PointerEvent('pointerup', {
+        bubbles: true,
+        pointerId: 2,
+        pointerType: 'touch',
+      }),
+    );
   });
 
   it('suspends animation while the tab is hidden and resumes with a single frame loop', () => {
     const viewer = createViewer();
     const renderer = renderers[0];
     expect(frames.size).toBe(1);
-    Object.defineProperty(document, 'hidden', { configurable: true, value: true });
+    Object.defineProperty(document, 'hidden', {
+      configurable: true,
+      value: true,
+    });
     document.dispatchEvent(new Event('visibilitychange'));
     expect(frames.size).toBe(0);
     renderer.render.mockClear();
     frame();
     expect(renderer.render).not.toHaveBeenCalled();
 
-    Object.defineProperty(document, 'hidden', { configurable: true, value: false });
+    Object.defineProperty(document, 'hidden', {
+      configurable: true,
+      value: false,
+    });
     document.dispatchEvent(new Event('visibilitychange'));
     document.dispatchEvent(new Event('visibilitychange'));
     expect(frames.size).toBe(1);
@@ -409,19 +571,5 @@ describe('native Three panorama adapter', () => {
     expect(renderer.setSize.mock.calls.at(-1).slice(0, 2)).toEqual([300, 600]);
     expect(renderer.camera.aspect).toBe(0.5);
     expect(frames.size).toBe(1);
-  });
-
-  it('toggles fullscreen on the viewport so its overlays remain visible', async () => {
-    const viewer = createViewer();
-    const requestFullscreen = vi.fn().mockResolvedValue(undefined);
-    const exitFullscreen = vi.fn().mockResolvedValue(undefined);
-    Object.defineProperty(container, 'requestFullscreen', { configurable: true, value: requestFullscreen });
-    Object.defineProperty(document, 'exitFullscreen', { configurable: true, value: exitFullscreen });
-    Object.defineProperty(document, 'fullscreenElement', { configurable: true, value: null });
-    await viewer.toggleFullscreen();
-    expect(requestFullscreen).toHaveBeenCalledOnce();
-    Object.defineProperty(document, 'fullscreenElement', { configurable: true, value: container });
-    await viewer.toggleFullscreen();
-    expect(exitFullscreen).toHaveBeenCalledOnce();
   });
 });
