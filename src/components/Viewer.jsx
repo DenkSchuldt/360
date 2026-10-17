@@ -4,7 +4,7 @@ import 'dayjs/locale/es';
 import { useState, useEffect, useRef } from 'react';
 import { createPanoramaViewer } from '../panorama';
 import { motion, AnimatePresence } from "framer-motion";
-import { CirclePlus, MapPinned, Pin } from 'lucide-react';
+import { CirclePlus, MapPinned, Pin, Maximize, Pause, Play, ZoomIn, ZoomOut } from 'lucide-react';
 import { CircularProgressbar } from 'react-circular-progressbar';
 
 import 'react-circular-progressbar/dist/styles.css';
@@ -22,18 +22,38 @@ const Viewer = props => {
   const viewerRef = useRef(null);
   const [ index, setIndex ] = useState(idx + 1);
   const [ progress, setProgress ] = useState();
+  const [ error, setError ] = useState();
+  const [ notice, setNotice ] = useState();
+  const [ rotating, setRotating ] = useState(true);
+  const [ retry, setRetry ] = useState(0);
   const imageUrl = `${import.meta.env.BASE_URL}images/${src}`;
 
   useEffect(() => {
-    const viewer = createPanoramaViewer(containerRef.current);
-    viewerRef.current = viewer;
+    let viewer;
+    try {
+      viewer = createPanoramaViewer(containerRef.current);
+      viewerRef.current = viewer;
+    } catch {
+      setError('No se pudo iniciar el visor 360. Usa un navegador compatible con WebGL 2.');
+      return;
+    }
     return () => {
       viewer.dispose();
       viewerRef.current = null;
     };
   }, []);
 
-  useEffect(() => viewerRef.current.load(imageUrl, setProgress), [imageUrl]);
+  useEffect(() => {
+    if (!viewerRef.current) return;
+    setError(undefined);
+    return viewerRef.current.load(imageUrl, setProgress, setError);
+  }, [imageUrl, retry]);
+
+  const toggleRotation = () => {
+    const enabled = !rotating;
+    viewerRef.current?.setAutoRotate(enabled);
+    setRotating(enabled);
+  };
 
   useEffect(() => {
     setIndex(idx + 1);
@@ -86,7 +106,26 @@ const Viewer = props => {
             <MapPinned size={24} />
           </a>
         }
+        <div className='panorama-controls' aria-label='Controles de panorámica'>
+          <button type='button' aria-label='Alejar' title='Alejar' onClick={() => viewerRef.current?.zoomBy(5)}><ZoomOut size={22} /></button>
+          <button type='button' aria-label='Acercar' title='Acercar' onClick={() => viewerRef.current?.zoomBy(-5)}><ZoomIn size={22} /></button>
+          <button type='button' aria-label={rotating ? 'Pausar autorrotación' : 'Activar autorrotación'} title={rotating ? 'Pausar autorrotación' : 'Activar autorrotación'} aria-pressed={rotating} onClick={toggleRotation}>
+            {rotating ? <Pause size={22} /> : <Play size={22} />}
+          </button>
+          <button type='button' aria-label='Pantalla completa' title='Pantalla completa' onClick={() => {
+            viewerRef.current?.toggleFullscreen().catch(() => setNotice('Este navegador no permite activar pantalla completa.'));
+          }}><Maximize size={22} /></button>
+        </div>
+        {notice && <div className='panorama-notice' role='status'>
+          <span>{notice}</span>
+          <button type='button' onClick={() => setNotice(undefined)}>Cerrar aviso</button>
+        </div>}
+        {error && <div className='panorama-error' role='alert'>
+          <p>{error}</p>
+          {viewerRef.current && <button type='button' onClick={() => setRetry(value => value + 1)}>Reintentar</button>}
+        </div>}
         <motion.div
+          aria-hidden={progress === undefined}
           initial={{ opacity: 0 }}
           animate={{
             opacity: progress !== undefined ? 1 : 0

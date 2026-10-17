@@ -54,34 +54,49 @@ source change is not used as a dependency until it is published.
 The Node range reflects the current test tools: Node 22.22.2+, 24.15.0+, or 26+.
 Node 24 LTS is the recommended development/CI version.
 
-## Retained panorama engine
+## Native Three.js panorama engine
 
-The existing files `public/libs/panolens.min.js` and `public/libs/three.min.js`
-are vendored browser globals, not npm dependencies. They are intentionally
-unchanged in this update so the original controls and image renderer remain
-intact. PANOLENS 0.11.0 declares THREE revision 105, while this repository already
-bundles THREE revision 117. Updating THREE independently would require a separate
-renderer compatibility migration, not just a version bump.
+The follow-on engine migration replaces vendored PANOLENS 0.11.0 / THREE r117
+with the published `three` 0.186.1 npm release (verified 2026-10-17). PANOLENS
+expected THREE r105, and even its latest 0.12.1 npm package depends on
+`three ^0.105.2`. Its official repository has been archived since June 2023.
+This is a maintenance/compatibility decision, not a claim of a known vendor
+security vulnerability.
 
-A small lifecycle adapter now keeps one viewer per mounted viewport, replaces
-only panoramas, tears down its canvas/controls/renderer on unmount, and protects
-against late image callbacks after disposal. React StrictMode replay no longer
-reuses a disposed viewer or duplicates canvases. The overlay allows pointer
-interaction with the panorama beneath it.
+The photo-only gallery does not need PANOLENS hotspots, tours or video support.
+It now follows Three's [official panorama example](https://threejs.org/examples/webgl_panorama_equirectangular.html):
+an inward-viewed sphere, equirectangular photo texture, perspective camera and
+first-party OrbitControls. The initial photo orientation and 65° field of view
+are preserved, as are navigation, filtering, map links and the React UI.
 
-Known vendor limitation: this old PANOLENS build does not correctly remove all
-of its fullscreen/device-orientation global listeners. The adapter cleans up
-resources exposed by its public API, but does not rewrite the minified vendor
-files or claim to fix those legacy listener leaks. The gallery mounts one
-viewport and reuses it while navigating; a future renderer migration should
-address this upstream limitation.
+- Mouse/touch drag rotates the panorama; wheel and two-finger pinch change FOV
+  between 30° and 120°, rather than moving the camera outside the sphere.
+- Accessible Lucide controls provide zoom, autorotation pause/resume and
+  fullscreen. Focus the panorama to use arrow keys and +/-.
+- Autorotation is frame-rate independent and resumes 10 seconds after
+  interaction. It can be explicitly paused. Hidden tabs stop the render loop.
+- A single canvas/renderer is reused across photos. Stale texture callbacks are
+  ignored and disposed. Unmount disposes textures, material, geometry, renderer,
+  controls, observers, listeners, idle timers and animation frames.
+- Fullscreen includes React overlays. Image failures offer a retry; unsupported
+  WebGL 2 browsers receive an explanatory message instead of a blank viewer.
+- The user chose the simple normal panorama experience. The old PANOLENS
+  sensor/Cardboard/stereoscopic settings menu is not part of this implementation;
+  no device-motion permission is requested and no VR/headset support is claimed.
+- Current Three requires WebGL 2. This intentionally drops the legacy WebGL 1
+  renderer path. The browser tests cover current Chromium desktop/mobile;
+  physical iOS/Android sensor/headset behavior is outside this scope.
+
+Three is MIT licensed; its notice is included in `public/third-party-licenses/`.
+There is no panorama-viewer service or license fee. Removing the vendored global
+scripts brings the engine into the npm lockfile and normal dependency auditing.
 
 ## Validation
 
 - Component integration tests use real React, Motion and `react-dialog`; only
   the WebGL renderer is mocked in jsdom.
-- Adapter regression tests also exercise the actual vendored ImagePanorama and
-  THREE implementation for delayed image loads and cleanup ordering.
+- Adapter regression tests exercise real Three geometry/camera/OrbitControls,
+  with only WebGL and image I/O mocked for deterministic jsdom checks.
 - Playwright checks real WebGL/image rendering and user flows on desktop and
   mobile Chromium. CI has the complete original photo collection.
 - No changes to photos, visual identity, production hosting or publication.

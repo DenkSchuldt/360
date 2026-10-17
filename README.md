@@ -43,8 +43,8 @@ npm run build
 npm run preview
 ```
 
-`build/` is a complete static site, including `public/images/` and the vendored
-renderer. The default `/360/` base preserves GitHub project-page URLs. For a
+`build/` is a complete static site, including `public/images/` and the bundled
+Three.js renderer. The default `/360/` base preserves GitHub project-page URLs. For a
 custom domain served from its root, build with `npm run build -- --base=/`.
 The router and image URLs follow the configured base automatically.
 
@@ -58,4 +58,4 @@ or publishes automatically.
 
 The old `gh-pages` npm helper was removed because its current release has an
 unpatched transitive vulnerability. See [modernization notes](docs/modernization.md)
-for dependency changes and the retained panorama-engine limitation.
+for dependency changes and the native Three.js panorama engine.
