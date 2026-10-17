@@ -152,7 +152,7 @@ test('supports drag, touch, zoom and paused autorotation without changing photos
 
 test('recovers from a failed image load and replaces an interrupted load', async ({ page }) => {
   let failFirst = true;
-  await page.route('**/images/*', async route => {
+  await page.route('**/images/**', async route => {
     if (failFirst) {
       failFirst = false;
       await route.abort();
