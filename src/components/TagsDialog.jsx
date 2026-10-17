@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import Dialog from '@denkschuldt/react-dialog';
+import { Pin } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 
 import './TagsDialog.scss';
@@ -42,12 +43,13 @@ const TagsDialog = props => {
               <AnimatePresence>
                 {
                   anchoredTags.includes(tag) &&
-                  <motion.i
+                  <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    className="fas fa-thumbtack">
-                  </motion.i>
+                    className="dnk-pin">
+                    <Pin size={12} />
+                  </motion.span>
                 }
               </AnimatePresence>
             </motion.span>

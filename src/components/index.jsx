@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { useState, useEffect, useMemo } from 'react';
 
@@ -81,7 +82,7 @@ const App = () => {
           initial={{ scale: 0 }}
           animate={{ scale: (!isPrevVisible || isTagsDialogVisible) ? 0 : 1 }}
           className='my-btn-left'>
-          <i className='fas fa-arrow-left'></i>
+          <ArrowLeft size={24} />
           <span>Previa</span>
         </motion.button>
         <Viewer
@@ -99,7 +100,7 @@ const App = () => {
           animate={{ scale: (!isNextVisible || isTagsDialogVisible) ? 0 : 1 }}
           className='my-btn-right'>
           <span>Siguiente</span>
-          <i className='fas fa-arrow-right'></i>
+          <ArrowRight size={24} />
         </motion.button>
       </main>
       {isTagsDialogVisible && (

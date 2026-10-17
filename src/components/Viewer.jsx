@@ -4,6 +4,7 @@ import 'dayjs/locale/es';
 import { useState, useEffect, useRef } from 'react';
 import { createPanoramaViewer } from '../panorama';
 import { motion, AnimatePresence } from "framer-motion";
+import { CirclePlus, MapPinned, Pin } from 'lucide-react';
 import { CircularProgressbar } from 'react-circular-progressbar';
 
 import 'react-circular-progressbar/dist/styles.css';
@@ -82,7 +83,7 @@ const Viewer = props => {
             className='my-vwr-marker'
             rel='noopener noreferrer'
             aria-label='Ver ubicación en el mapa'>
-            <i className="fas fa-map-marked-alt"></i>
+            <MapPinned size={24} />
           </a>
         }
         <motion.div
@@ -123,12 +124,13 @@ const Viewer = props => {
                 <AnimatePresence>
                   {
                     anchoredTags.includes(tag) &&
-                    <motion.i
+                    <motion.span
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}
-                      className="fas fa-thumbtack">
-                    </motion.i>
+                      className="dnk-pin">
+                      <Pin size={12} />
+                    </motion.span>
                   }
                 </AnimatePresence>
               </motion.span>
@@ -148,7 +150,7 @@ const Viewer = props => {
               }}
               className='dnk-tag'
               onClick={openTagsDialog}>
-              <i className="fas fa-plus-circle"></i>
+              <CirclePlus size={16} />
             </motion.span>
           }
         </motion.div>

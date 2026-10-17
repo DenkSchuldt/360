@@ -7,6 +7,7 @@ resolved dependency graph. Run `npm ci` rather than deleting the lockfile.
 
 | Package | Previous range | Updated range |
 | --- | --- | --- |
+| lucide-react | external Font Awesome kit | ^1.59.0 |
 | React / React DOM | ^16.13.1 | ^19.3.1 |
 | @denkschuldt/react-dialog | ^1.0.3 | ^2.0.0 |
 | dayjs | ^1.10.4 | ^1.11.23 |
@@ -37,7 +38,13 @@ source change is not used as a dependency until it is published.
 - Move testing/build packages out of runtime dependencies.
 - Remove unused `react-window`; no code imported it.
 - Remove unused Facebook, Twitter-widget and GitHub-button SDK scripts from the
-  HTML entry. The existing social-profile links and Font Awesome icons remain.
+  HTML entry. The existing social-profile links remain.
+- Replace Font Awesome entirely with local Lucide React SVG icons, as requested.
+  Real-browser tests exposed that unavailable kit requests made the icon-only
+  map/filter controls invisible. Lucide 1 does not ship brand logos, so the same
+  social links use CodeXml, MessageCircle and Camera with explicit titles and
+  accessible names; map, navigation, pin and filter controls use matching Lucide
+  symbols. No icon kit, icon font, or Font Awesome dependency remains.
 - Remove the `gh-pages` deploy helper and deploy scripts. Latest 6.3.0 pulls in
   `braces` through `globby`/`fast-glob`/`micromatch`, with the unpatched advisory
   [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm).

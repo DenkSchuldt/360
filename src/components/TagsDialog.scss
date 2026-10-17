@@ -21,7 +21,9 @@
       margin-right: 10px;
       margin-bottom: 6px;
       color: var(--primary-color);
-      .fa-thumbtack {
+      .dnk-pin {
+        display: inline-flex;
+        vertical-align: middle;
         font-size: 12px;
         margin-left: 2px;
       }
@@ -31,3 +33,4 @@
     }
   }
 }
+
