@@ -8,6 +8,12 @@ on:
 permissions:
   contents: read
 
+# Serialize master builds/deployments. Superseded PR checks can be cancelled,
+# but an in-progress production deployment must be allowed to finish.
+concurrency:
+  group: gallery-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -30,3 +36,26 @@ jobs:
           name: browser-results
           path: test-results/
           retention-days: 7
+      - name: Upload tested site for GitHub Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository == 'DenkSchuldt/360'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: build/
+          include-hidden-files: true
+
+  deploy:
+    name: Deploy GitHub Pages
+    needs: check
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository == 'DenkSchuldt/360'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # Deploy the artifact from this run; do not rebuild or check out PR code.
+      - name: Deploy tested site
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
