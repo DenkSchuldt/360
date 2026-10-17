@@ -207,6 +207,10 @@ test('fills mobile content through repeated portrait and landscape viewport chan
     await test.step(`Viewport ${width} x ${height}`, async () => {
       await page.setViewportSize({ width, height });
       await expectViewportLayout(page, { fullBleed: true });
+      if (width === 667 || width === 320 || (width === 844 && height === 390))
+        await page.screenshot({
+          path: test.info().outputPath(`viewport-${width}x${height}.png`),
+        });
     });
   }
   await expect(page.locator('.my-vwr')).toHaveAttribute(
@@ -272,6 +276,12 @@ test('keeps mobile overlays clear of portrait and landscape safe areas', async (
         fullBleed: true,
         insets: scenario.insets,
       });
+      if (scenario.width > scenario.height)
+        await page.screenshot({
+          path: test
+            .info()
+            .outputPath(`safe-area-${scenario.width}x${scenario.height}.png`),
+        });
     });
   }
   await page.screenshot({
