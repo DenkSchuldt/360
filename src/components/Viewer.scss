@@ -79,6 +79,7 @@
       }
     }
     .my-vwr-progress-wrapper {
+      pointer-events: none;
       top: 0;
       left: 0;
       width: 100%;
@@ -121,7 +122,9 @@
         &:not(:first-of-type) {
           margin-left: 8px;
         }
-        .fa-thumbtack {
+        .dnk-pin {
+        display: inline-flex;
+        vertical-align: middle;
           font-size: 12px;
           margin-left: 2px;
         }
@@ -190,3 +193,4 @@
     }
   }
 }
+

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import { CodeXml, MessageCircle, Camera } from 'lucide-react';
 
 import './Header.scss';
 
@@ -14,20 +14,26 @@ const Header = ({ style }) => {
         <a
           target='_blank'
           rel='noopener noreferrer'
+          aria-label='GitHub de Denny Schuldt'
+          title='GitHub'
           href='https://github.com/DenkSchuldt'>
-          <i className="fab fa-github"></i>
+          <CodeXml size={24} />
         </a>
         <a
           target='_blank'
           rel='noopener noreferrer'
+          aria-label='Twitter de Denny Schuldt'
+          title='Twitter'
           href='https://twitter.com/DenkSchuldt'>
-          <i className="fab fa-twitter"></i>
+          <MessageCircle size={24} />
         </a>
         <a
           target='_blank'
           rel='noopener noreferrer'
+          aria-label='Instagram de Denny Schuldt'
+          title='Instagram'
           href='https://www.instagram.com/denkschuldt/'>
-          <i className="fab fa-instagram"></i>
+          <Camera size={24} />
         </a>
       </div>
     </header>
@@ -35,3 +41,4 @@ const Header = ({ style }) => {
 }
 
 export default Header;
+

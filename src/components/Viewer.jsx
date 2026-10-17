@@ -1,8 +1,10 @@
 
 import dayjs from 'dayjs';
-import es from 'dayjs/locale/es';
-import React, { useState, useEffect } from 'react';
+import 'dayjs/locale/es';
+import { useState, useEffect, useRef } from 'react';
+import { createPanoramaViewer } from '../panorama';
 import { motion, AnimatePresence } from "framer-motion";
+import { CirclePlus, MapPinned, Pin } from 'lucide-react';
 import { CircularProgressbar } from 'react-circular-progressbar';
 
 import 'react-circular-progressbar/dist/styles.css';
@@ -14,43 +16,28 @@ dayjs.locale("es");
 const Viewer = props => {
   const {
     id, idx, total, src, name, marker, date, tags, location, setCurrentIndex,
-    anchoredTags, setAnchoredTags, openTagsDialog, history
+    anchoredTags, setAnchoredTags, openTagsDialog
   } = props;
-  const [ viewer, setViewer ] = useState();
-  const [ index, setIndex ] = useState('');
+  const containerRef = useRef(null);
+  const viewerRef = useRef(null);
+  const [ index, setIndex ] = useState(idx + 1);
   const [ progress, setProgress ] = useState();
+  const imageUrl = `${import.meta.env.BASE_URL}images/${src}`;
+
   useEffect(() => {
-    history.replace(`?id=${id}`);
-    setIndex(idx + 1);
-    if (viewer) {
+    const viewer = createPanoramaViewer(containerRef.current);
+    viewerRef.current = viewer;
+    return () => {
       viewer.dispose();
-    }
-    let pano = new window.PANOLENS.ImagePanorama(`${window.location.origin}/360/images/${src}`);
-    pano.addEventListener('enter', () => setProgress(0));
-    pano.addEventListener('progress', e => {
-      const p = e.progress.loaded / e.progress.total * 100;
-      setProgress(p === 100 ? undefined : p);
-    });
-    let v;
-    if (viewer) {
-      v = viewer;
-    } else {
-      v = new window.PANOLENS.Viewer({
-        container: document.getElementById('myVwr'),
-        cameraFov: 65,
-        autoRotate: true,
-        autoRotateSpeed: 1,
-        autoRotateActivationDuration: 10000,
-        controlButtons: ['fullscreen', 'setting']
-      });
-      v.getCamera().translateX(500);
-      v.getCamera().translateY(-100);
-      setViewer(v);
-    }
-    v.clearAllCache();
-    v.add(pano);
-    v.setPanorama(pano);
-  }, [id, idx]);
+      viewerRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => viewerRef.current.load(imageUrl, setProgress), [imageUrl]);
+
+  useEffect(() => {
+    setIndex(idx + 1);
+  }, [idx]);
   return (
     <div
       className='my-vwr-wrapper'>
@@ -58,11 +45,15 @@ const Viewer = props => {
         <span className='index'>
           <input
             type='number'
+            aria-label='Número de panorama'
+            min={1}
+            max={total}
+            step={1}
             value={index}
             onKeyDown={e => {
               if (e.key === 'Enter') {
-                const x = parseInt(index)
-                if (x >= 1 && x <= total) {
+                const x = Number(index)
+                if (Number.isInteger(x) && x >= 1 && x <= total) {
                   setCurrentIndex(x - 1);
                 }
               }
@@ -82,6 +73,7 @@ const Viewer = props => {
       </div>
       <div
         id='myVwr'
+        ref={containerRef}
         className='my-vwr'>
         {
           marker &&
@@ -90,8 +82,8 @@ const Viewer = props => {
             target='_blank'
             className='my-vwr-marker'
             rel='noopener noreferrer'
-            onClick={() => window.open(marker, '_blank')}>
-            <i className="fas fa-map-marked-alt"></i>
+            aria-label='Ver ubicación en el mapa'>
+            <MapPinned size={24} />
           </a>
         }
         <motion.div
@@ -119,7 +111,7 @@ const Viewer = props => {
           {
             tags.map((tag, idx) => (
               <motion.span
-                key={idx}
+                key={tag}
                 className='dnk-tag'
                 onClick={() => {
                   setAnchoredTags(
@@ -132,12 +124,13 @@ const Viewer = props => {
                 <AnimatePresence>
                   {
                     anchoredTags.includes(tag) &&
-                    <motion.i
+                    <motion.span
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}
-                      className="fas fa-thumbtack">
-                    </motion.i>
+                      className="dnk-pin">
+                      <Pin size={12} />
+                    </motion.span>
                   }
                 </AnimatePresence>
               </motion.span>
@@ -146,10 +139,18 @@ const Viewer = props => {
           {
             tags.length > 0 &&
             <motion.span
-              key={idx}
+              role='button'
+              tabIndex={0}
+              aria-label='Filtrar por hashtags'
+              onKeyDown={event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  openTagsDialog();
+                }
+              }}
               className='dnk-tag'
               onClick={openTagsDialog}>
-              <i className="fas fa-plus-circle"></i>
+              <CirclePlus size={16} />
             </motion.span>
           }
         </motion.div>
@@ -159,3 +160,4 @@ const Viewer = props => {
 }
 
 export default Viewer;
+

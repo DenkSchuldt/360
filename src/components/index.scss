@@ -30,7 +30,7 @@ main {
     &:hover {
       box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     }
-    .fas {
+    .lucide {
       font-size: 24px;
     }
     span {
@@ -38,13 +38,13 @@ main {
     }
     &.my-btn-left {
       left: -24px;
-      .fas {
+      .lucide {
         margin-right: 12px;
       }
     }
     &.my-btn-right {
       right: -24px;
-      .fas {
+      .lucide {
         margin-left: 12px;
       }
     }
@@ -63,16 +63,17 @@ main {
     button {
       &.my-btn-left {
         left: 12px;
-        .fas {
+        .lucide {
           margin-right: 8px;
         }
       }
       &.my-btn-right {
         right: 12px;
-        .fas {
+        .lucide {
           margin-left: 8px;
         }
       }
     }
   }
 }
+
