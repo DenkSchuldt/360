@@ -1,10 +1,49 @@
 import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { afterEach, beforeEach, vi } from 'vitest';
+import { Texture, TextureLoader } from 'three';
 
-// WebGL cannot run in jsdom. Keep React, Motion and the installed dialog real.
-export const panoramas = [];
-export const viewers = [];
+const fixtures = vi.hoisted(() => ({
+  renderers: [],
+  textureRequests: [],
+  resizeObservers: [],
+  rendererFailure: undefined,
+}));
+export const { renderers, textureRequests, resizeObservers } = fixtures;
+export function setRendererFailure(error) {
+  fixtures.rendererFailure = error;
+}
+
+vi.mock('three', async importOriginal => {
+  const actual = await importOriginal();
+  class WebGLRenderer {
+    constructor(options = {}) {
+      if (fixtures.rendererFailure) throw fixtures.rendererFailure;
+      this.domElement = options.canvas || document.createElement('canvas');
+      this.options = options;
+      this.capabilities = { getMaxAnisotropy: () => 16 };
+      this.setPixelRatio = vi.fn(value => {
+        this.pixelRatio = value;
+      });
+      this.setSize = vi.fn((width, height) => {
+        this.domElement.width = width;
+        this.domElement.height = height;
+        Object.defineProperties(this.domElement, {
+          clientWidth: { configurable: true, value: width },
+          clientHeight: { configurable: true, value: height },
+        });
+      });
+      this.render = vi.fn((scene, camera) => {
+        this.scene = scene;
+        this.camera = camera;
+      });
+      this.dispose = vi.fn();
+      this.forceContextLoss = vi.fn();
+      fixtures.renderers.push(this);
+    }
+  }
+  return { ...actual, WebGLRenderer };
+});
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
@@ -20,74 +59,64 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
+for (const method of ['setPointerCapture', 'releasePointerCapture']) {
+  if (!HTMLCanvasElement.prototype[method]) {
+    Object.defineProperty(HTMLCanvasElement.prototype, method, {
+      configurable: true,
+      writable: true,
+      value: () => {},
+    });
+  }
+}
+
 beforeEach(() => {
   localStorage.clear();
-  panoramas.length = 0;
-  viewers.length = 0;
+  renderers.length = 0;
+  textureRequests.length = 0;
+  resizeObservers.length = 0;
+  fixtures.rendererFailure = undefined;
 
-  class ImagePanorama {
-    constructor(source) {
-      this.source = source;
-      this.listeners = new Map();
-      this.addEventListener = vi.fn((event, listener) => {
-        if (!this.listeners.has(event)) this.listeners.set(event, new Set());
-        this.listeners.get(event).add(listener);
+  vi.spyOn(TextureLoader.prototype, 'load').mockImplementation(
+    function (source, onLoad, onProgress, onError) {
+      const texture = new Texture();
+      vi.spyOn(texture, 'dispose');
+      textureRequests.push({
+        source,
+        texture,
+        resolve: (result = texture) => onLoad?.(result),
+        progress: event => onProgress?.(event),
+        reject: error => onError?.(error),
       });
-      this.removeEventListener = vi.fn((event, listener) => {
-        this.listeners.get(event)?.delete(listener);
-      });
-      this.dispatchEvent = vi.fn(event => this.emit(event.type, event));
-      this.onLoad = vi.fn();
-      this.dispose = vi.fn(() => {
-        this.disposed = true;
-        for (const viewer of viewers) {
-          if (viewer.panorama === this) viewer.panorama = null;
-        }
-      });
-      panoramas.push(this);
-    }
+      return texture;
+    },
+  );
 
-    emit(event, details = {}) {
-      this.listeners.get(event)?.forEach(listener => listener(details));
-    }
-  }
+  vi.stubGlobal(
+    'ResizeObserver',
+    class ResizeObserver {
+      constructor(callback) {
+        this.callback = callback;
+        this.observe = vi.fn();
+        this.unobserve = vi.fn();
+        this.disconnect = vi.fn();
+        resizeObservers.push(this);
+      }
+    },
+  );
 
-  class Viewer {
-    constructor(options) {
-      this.options = options;
-      this.canvas = document.createElement('canvas');
-      this.toolbar = document.createElement('div');
-      this.toolbar.className = 'mock-panolens-toolbar';
-      options.container.append(this.canvas, this.toolbar);
-      this.camera = { translateX: vi.fn(), translateY: vi.fn() };
-      this.getCamera = vi.fn(() => this.camera);
-      this.renderer = { dispose: vi.fn(), forceContextLoss: vi.fn() };
-      this.getRenderer = vi.fn(() => this.renderer);
-      this.controls = [{ dispose: vi.fn() }, { dispose: vi.fn() }];
-      this.reticle = { end: vi.fn() };
-      this.disableAutoRate = vi.fn();
-      this.unregisterMouseAndTouchEvents = vi.fn();
-      this.clearAllCache = vi.fn();
-      this.add = vi.fn(panorama => {
-        if (this.disposed) throw new Error('A disposed PANOLENS viewer was reused');
-        this.panorama = panorama;
-      });
-      this.remove = vi.fn();
-      this.setPanorama = vi.fn(panorama => {
-        if (this.disposed) throw new Error('A disposed PANOLENS viewer was reused');
-        this.panorama = panorama;
-      });
-      this.dispose = vi.fn(() => { this.disposed = true; });
-      this.destroy = vi.fn(() => { this.disposed = true; });
-      viewers.push(this);
-    }
-  }
-
-  window.PANOLENS = { ImagePanorama, Viewer };
+  vi.spyOn(HTMLCanvasElement.prototype, 'setPointerCapture').mockImplementation(
+    () => {},
+  );
+  vi.spyOn(
+    HTMLCanvasElement.prototype,
+    'releasePointerCapture',
+  ).mockImplementation(() => {});
 });
 
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
   vi.unstubAllEnvs();
+  vi.useRealTimers();
 });

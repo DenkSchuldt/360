@@ -1,6 +1,5 @@
-
 :root {
-  --box-shadow: 0 19px 58px rgba(0,0,0,0.10), 0 5px 12px rgba(0,0,0,0.22);
+  --box-shadow: 0 19px 58px rgba(0, 0, 0, 0.1), 0 5px 12px rgba(0, 0, 0, 0.22);
   --primary-color: #00acc1;
   --black: #424242;
   --seconds: 0.2s;

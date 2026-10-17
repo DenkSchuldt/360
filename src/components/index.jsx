@@ -22,9 +22,7 @@ const readStored = (key, fallback) => {
 const writeStored = (key, value) => {
   try {
     localStorage.setItem(key, value);
-  } catch {
-    // The gallery remains usable when browser storage is unavailable.
-  }
+  } catch {}
 };
 
 const App = () => {
@@ -33,16 +31,27 @@ const App = () => {
   const [anchoredTags, setTags] = useState(() => {
     try {
       const saved = JSON.parse(readStored('my-tags', '[]'));
-      return Array.isArray(saved) ? saved.filter(tag => allTags.includes(tag)) : [];
+      return Array.isArray(saved)
+        ? saved.filter(tag => allTags.includes(tag))
+        : [];
     } catch {
       return [];
     }
   });
-  const data = useMemo(() => anchoredTags.length
-    ? rawData.filter(item => item.tags.some(tag => anchoredTags.includes(tag)))
-    : rawData, [anchoredTags]);
+  const data = useMemo(
+    () =>
+      anchoredTags.length
+        ? rawData.filter(item =>
+            item.tags.some(tag => anchoredTags.includes(tag)),
+          )
+        : rawData,
+    [anchoredTags],
+  );
   const requestedId = searchParams.get('id') || storedId;
-  const currentIndex = Math.max(0, data.findIndex(item => String(item.id) === requestedId));
+  const currentIndex = Math.max(
+    0,
+    data.findIndex(item => String(item.id) === requestedId),
+  );
   const current = data[currentIndex];
   const [isTagsDialogVisible, setIsTagsDialogVisible] = useState(false);
   const isPrevVisible = currentIndex > 0;
@@ -50,11 +59,14 @@ const App = () => {
 
   const setCurrentIndex = idx => {
     if (!data[idx]) return;
-    setSearchParams(previous => {
-      const next = new URLSearchParams(previous);
-      next.set('id', data[idx].id);
-      return next;
-    }, { replace: true });
+    setSearchParams(
+      previous => {
+        const next = new URLSearchParams(previous);
+        next.set('id', data[idx].id);
+        return next;
+      },
+      { replace: true },
+    );
   };
 
   useEffect(() => {
@@ -64,11 +76,14 @@ const App = () => {
   useEffect(() => {
     writeStored('my-id', String(current.id));
     if (searchParams.get('id') !== String(current.id)) {
-      setSearchParams(previous => {
-        const next = new URLSearchParams(previous);
-        next.set('id', current.id);
-        return next;
-      }, { replace: true });
+      setSearchParams(
+        previous => {
+          const next = new URLSearchParams(previous);
+          next.set('id', current.id);
+          return next;
+        },
+        { replace: true },
+      );
     }
   }, [current.id, searchParams, setSearchParams]);
 
@@ -80,8 +95,9 @@ const App = () => {
           onClick={() => setCurrentIndex(currentIndex - 1)}
           disabled={!isPrevVisible || isTagsDialogVisible}
           initial={{ scale: 0 }}
-          animate={{ scale: (!isPrevVisible || isTagsDialogVisible) ? 0 : 1 }}
-          className='my-btn-left'>
+          animate={{ scale: !isPrevVisible || isTagsDialogVisible ? 0 : 1 }}
+          className='my-btn-left'
+        >
           <ArrowLeft size={24} />
           <span>Previa</span>
         </motion.button>
@@ -92,13 +108,15 @@ const App = () => {
           anchoredTags={anchoredTags}
           setAnchoredTags={setTags}
           setCurrentIndex={setCurrentIndex}
-          openTagsDialog={() => setIsTagsDialogVisible(true)} />
+          openTagsDialog={() => setIsTagsDialogVisible(true)}
+        />
         <motion.button
           onClick={() => setCurrentIndex(currentIndex + 1)}
           disabled={!isNextVisible || isTagsDialogVisible}
           initial={{ scale: 0 }}
-          animate={{ scale: (!isNextVisible || isTagsDialogVisible) ? 0 : 1 }}
-          className='my-btn-right'>
+          animate={{ scale: !isNextVisible || isTagsDialogVisible ? 0 : 1 }}
+          className='my-btn-right'
+        >
           <span>Siguiente</span>
           <ArrowRight size={24} />
         </motion.button>
@@ -108,7 +126,8 @@ const App = () => {
           tags={allTags}
           anchoredTags={anchoredTags}
           setAnchoredTags={setTags}
-          onClose={() => setIsTagsDialogVisible(false)} />
+          onClose={() => setIsTagsDialogVisible(false)}
+        />
       )}
     </>
   );

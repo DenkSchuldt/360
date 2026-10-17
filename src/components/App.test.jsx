@@ -11,7 +11,10 @@ function RouterProbe() {
   const navigate = useNavigate();
   return (
     <>
-      <output data-testid='location'>{location.pathname}{location.search}</output>
+      <output data-testid='location'>
+        {location.pathname}
+        {location.search}
+      </output>
       <button onClick={() => navigate(-1)}>Browser back</button>
       <button onClick={() => navigate(1)}>Browser forward</button>
     </>
@@ -30,17 +33,26 @@ function renderGallery(initialEntries = ['/360/']) {
 }
 
 function currentSearch() {
-  return new URL(screen.getByTestId('location').textContent, 'https://example.test').searchParams;
+  return new URL(
+    screen.getByTestId('location').textContent,
+    'https://example.test',
+  ).searchParams;
 }
 
 async function expectPanorama(panorama, index, total = rawData.length) {
   await waitFor(() => {
-    expect(screen.getByRole('spinbutton', { name: 'Número de panorama' })).toHaveValue(index + 1);
+    expect(
+      screen.getByRole('spinbutton', { name: 'Número de panorama' }),
+    ).toHaveValue(index + 1);
     expect(currentSearch().get('id')).toBe(String(panorama.id));
     expect(localStorage.getItem('my-id')).toBe(String(panorama.id));
   });
-  expect(screen.getByText(panorama.name, { selector: '.my-vwr-header strong' })).toBeInTheDocument();
-  expect(screen.getByRole('spinbutton').parentElement).toHaveTextContent(`/${total}`);
+  expect(
+    screen.getByText(panorama.name, { selector: '.my-vwr-header strong' }),
+  ).toBeInTheDocument();
+  expect(screen.getByRole('spinbutton').parentElement).toHaveTextContent(
+    `/${total}`,
+  );
 }
 
 async function openFilters(user) {
@@ -53,7 +65,9 @@ async function openFilters(user) {
 
 async function applyFilters(user, dialog) {
   await user.click(dialog.getByRole('button', { name: 'Aplicar' }));
-  await waitFor(() => expect(screen.queryByText('Hashtags')).not.toBeInTheDocument());
+  await waitFor(() =>
+    expect(screen.queryByText('Hashtags')).not.toBeInTheDocument(),
+  );
 }
 
 describe('gallery routing and persisted state', () => {
@@ -90,7 +104,9 @@ describe('gallery routing and persisted state', () => {
     await user.click(screen.getByRole('button', { name: 'Previa' }));
     await expectPanorama(rawData[0], 0);
 
-    const input = screen.getByRole('spinbutton', { name: 'Número de panorama' });
+    const input = screen.getByRole('spinbutton', {
+      name: 'Número de panorama',
+    });
     for (const value of ['0', String(rawData.length + 1), '1.5']) {
       await user.clear(input);
       await user.type(input, `${value}{Enter}`);
@@ -105,10 +121,7 @@ describe('gallery routing and persisted state', () => {
 
   it('responds to back and forward route changes without rewriting their panorama ids', async () => {
     const user = userEvent.setup();
-    renderGallery([
-      `/360/?id=${rawData[2].id}`,
-      `/360/?id=${rawData[5].id}`,
-    ]);
+    renderGallery([`/360/?id=${rawData[2].id}`, `/360/?id=${rawData[5].id}`]);
     await expectPanorama(rawData[5], 5);
 
     await user.click(screen.getByRole('button', { name: 'Browser back' }));
@@ -117,21 +130,27 @@ describe('gallery routing and persisted state', () => {
     await expectPanorama(rawData[5], 5);
   });
 
-  it.each(['{invalid-json', 'null', '"Argentina"', '{}', '["Unknown tag", 12, null]'])(
-    'recovers from unusable stored filters: %s',
-    async value => {
-      localStorage.setItem('my-tags', value);
-      renderGallery();
+  it.each([
+    '{invalid-json',
+    'null',
+    '"Argentina"',
+    '{}',
+    '["Unknown tag", 12, null]',
+  ])('recovers from unusable stored filters: %s', async value => {
+    localStorage.setItem('my-tags', value);
+    renderGallery();
 
-      await expectPanorama(rawData[0], 0);
-      expect(localStorage.getItem('my-tags')).toBe('[]');
-    },
-  );
+    await expectPanorama(rawData[0], 0);
+    expect(localStorage.getItem('my-tags')).toBe('[]');
+  });
 
   it('restores valid filters while removing unknown tags and preserves a matching deep link', async () => {
     const argentina = rawData.filter(item => item.tags.includes('Argentina'));
     const selected = argentina[2];
-    localStorage.setItem('my-tags', JSON.stringify(['Argentina', 'Unknown tag', null]));
+    localStorage.setItem(
+      'my-tags',
+      JSON.stringify(['Argentina', 'Unknown tag', null]),
+    );
     renderGallery([`/360/?id=${selected.id}`]);
 
     await expectPanorama(selected, 2, argentina.length);
@@ -215,7 +234,9 @@ describe('installed dialog integration', () => {
       } else {
         await user.keyboard('{Escape}');
       }
-      await waitFor(() => expect(screen.queryByText('Hashtags')).not.toBeInTheDocument());
+      await waitFor(() =>
+        expect(screen.queryByText('Hashtags')).not.toBeInTheDocument(),
+      );
       await expectPanorama(rawData[0], 0);
       expect(localStorage.getItem('my-tags')).toBe('[]');
 

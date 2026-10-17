@@ -11,7 +11,8 @@
     "react": "^19.3.1",
     "react-circular-progressbar": "^2.2.0",
     "react-dom": "^19.3.1",
-    "react-router-dom": "^7.18.4"
+    "react-router-dom": "^7.18.4",
+    "three": "^0.186.1"
   },
   "scripts": {
     "start": "vite",
