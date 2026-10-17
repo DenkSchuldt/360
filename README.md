@@ -48,13 +48,32 @@ Three.js renderer. The default `/360/` base preserves GitHub project-page URLs. 
 custom domain served from its root, build with `npm run build -- --base=/`.
 The router and image URLs follow the configured base automatically.
 
-Deployment is deliberately separate from checks. To publish manually to the
-existing GitHub Pages branch, use a separate checkout of `gh-pages`, replace its
-site files with the contents of `build/`, preserve any existing `CNAME`, review
-the diff, then commit and push that branch when you intend to publish. For a
-static hosting service, upload the contents of `build/` as the site's root.
-Do not upload source files or `node_modules`. No command in this project deploys
-or publishes automatically.
+### GitHub Pages
+
+After this workflow is merged, pushes to `master` run the component/lifecycle
+checks, production build, high-severity dependency audit, and desktop/mobile
+browser tests in **Check gallery**. Only after these checks succeed does the
+workflow upload its exact `build/` output. The dependent deployment job publishes
+that same artifact to GitHub Pages.
+Pull requests and forks never deploy. There is no rebuild in the deployment job,
+no personal access token, and no npm publishing/deployment helper.
+
+Before enabling the first deployment, a repository administrator must verify
+**Settings → Pages → Build and deployment → Source: GitHub Actions**.
+The current source setting has not been verified; adding this workflow does not
+change it. If the `github-pages` environment has protection rules, allow `master`
+and satisfy any required approvals. See the
+[GitHub Pages setup documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-with-a-custom-github-actions-workflow).
+Review and intentionally merge this PR only when ready to publish.
+
+The site keeps its `/360/` base and
+[existing project-page URL](https://denkschuldt.github.io/360/). The workflow does
+not update the legacy `gh-pages` branch. Master runs are serialized, while newer
+PR updates cancel obsolete PR checks. If more validation jobs are added later,
+include them in the deployment job's `needs` before relying on them as gates.
+
+For another static hosting service, upload the contents of `build/` as the site's
+root. Do not upload source files or `node_modules`.
 
 The old `gh-pages` npm helper was removed because its current release has an
 unpatched transitive vulnerability. See [modernization notes](docs/modernization.md)

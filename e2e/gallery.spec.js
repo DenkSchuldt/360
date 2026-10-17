@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
         const source = args.at(-1);
         if (source instanceof HTMLImageElement && source.naturalWidth > 0) {
           window.__galleryTextureUploads.push({ source: source.src, width: source.naturalWidth });
-        } else if (source instanceof HTMLCanvasElement && source.width > 0) {
+        } else if ((source instanceof HTMLCanvasElement || (typeof OffscreenCanvas !== 'undefined' && source instanceof OffscreenCanvas)) && source.width > 0) {
           // Three can resize photos larger than the GPU's maximum texture size.
           window.__galleryTextureUploads.push({ source: 'resized-photo', width: source.width });
         }
@@ -30,10 +30,10 @@ test.beforeEach(async ({ page }) => {
 
 async function expectLoadedPanorama(page) {
   await expect(page.locator('.my-vwr')).toHaveAttribute('data-panorama-state', 'ready');
-  await page.waitForFunction(() => {
+  await expect.poll(() => page.evaluate(() => {
     const source = document.querySelector('.my-vwr')?.dataset.panoramaSource;
-    return source && window.__galleryTextureUploads.some(upload => (upload.source.endsWith(source) || upload.source === 'resized-photo') && upload.width > 0);
-  });
+    return Boolean(source && window.__galleryTextureUploads.some(upload => (upload.source.endsWith(source) || upload.source === 'resized-photo') && upload.width > 0));
+  }), { message: 'Expected the loaded photo to reach a real GPU texture' }).toBe(true);
   await expect(page.locator('.my-vwr canvas')).toHaveCount(1);
 }
 
