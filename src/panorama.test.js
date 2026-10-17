@@ -367,7 +367,7 @@ describe('native Three panorama adapter', () => {
     viewer.setAutoRotate(false);
     const { camera, domElement: canvas } = renderers[0];
     const controls = activeControls();
-    expect(controls.rotateSpeed).toBe(-0.15);
+    expect(controls.rotateSpeed).toBe(-0.45);
     const originalAzimuth = controls.getAzimuthalAngle();
     const originalDirection = camera.quaternion.clone();
     canvas.dispatchEvent(
@@ -426,6 +426,42 @@ describe('native Three panorama adapter', () => {
     );
     expect(camera.fov).toBe(60);
   });
+
+  it.each(['mouse', 'touch'])(
+    'rotates three times farther for the same %s drag without changing zoom',
+    pointerType => {
+      const viewer = createViewer();
+      viewer.setAutoRotate(false);
+      const controls = activeControls();
+      controls.enableDamping = false;
+      controls.update(0);
+      const { camera, domElement: canvas } = renderers[0];
+      const before = controls.getAzimuthalAngle();
+      const distance = camera.position.length();
+      for (const [type, clientX] of [
+        ['pointerdown', 300],
+        ['pointermove', 400],
+        ['pointerup', 400],
+      ]) {
+        canvas.dispatchEvent(
+          new PointerEvent(type, {
+            bubbles: true,
+            pointerId: 1,
+            pointerType,
+            clientX,
+            clientY: 200,
+            button: 0,
+          }),
+        );
+      }
+      const previousSensitivityAngle = (2 * Math.PI * 100 * 0.15) / 400;
+      expect(controls.getAzimuthalAngle() - before).toBeCloseTo(
+        previousSensitivityAngle * 3,
+      );
+      expect(camera.fov).toBe(65);
+      expect(camera.position.length()).toBeCloseTo(distance);
+    },
+  );
 
   it.each([
     ['ArrowRight', [1, 0, 0], 1],

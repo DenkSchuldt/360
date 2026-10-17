@@ -216,17 +216,20 @@
   }
 }
 
-@media only screen and (max-width: 650px) {
+@media only screen and (max-width: 650px),
+  only screen and (max-height: 500px) and (pointer: coarse) {
   .my-vwr-wrapper {
     padding: 0;
     .my-vwr-header {
       z-index: 1;
       padding: 8px;
-      margin: 12px;
-      margin-top: 16px;
+      margin: 16px calc(12px + var(--safe-area-inset-right)) 12px
+        calc(12px + var(--safe-area-inset-left));
       border-radius: 10px;
       box-sizing: border-box;
-      width: calc(100% - 24px);
+      width: calc(
+        100% - 24px - var(--safe-area-inset-left) - var(--safe-area-inset-right)
+      );
       background-color: rgba(255, 255, 255, 0.9);
       box-shadow:
         0 19px 58px rgba(0, 0, 0, 0.1),
@@ -236,6 +239,8 @@
         min-width: fit-content;
       }
       .content {
+        min-width: 0;
+        overflow-wrap: anywhere;
         strong {
           font-size: 16px;
         }
@@ -245,25 +250,36 @@
       }
     }
     .my-vwr {
+      inset: 0;
       margin: 0;
       height: 100%;
       border-radius: 0;
       position: absolute;
+      .panorama-controls {
+        right: calc(8px + var(--safe-area-inset-right));
+        bottom: calc(6px + var(--safe-area-inset-bottom));
+      }
+      .my-vwr-marker {
+        left: calc(14px + var(--safe-area-inset-left));
+        bottom: calc(10px + var(--safe-area-inset-bottom));
+      }
       div,
       canvas {
         border-radius: 0px;
       }
     }
     .my-vwr-footer {
-      right: 0;
+      right: var(--safe-area-inset-right);
       z-index: 2;
-      bottom: 44px;
+      bottom: calc(44px + var(--safe-area-inset-bottom));
       margin: 12px;
       padding: 8px;
       display: flex;
       position: absolute;
       width: fit-content;
-      max-width: calc(100% - 24px);
+      max-width: calc(
+        100% - 24px - var(--safe-area-inset-left) - var(--safe-area-inset-right)
+      );
       align-items: center;
       border-radius: 10px;
       box-sizing: border-box;

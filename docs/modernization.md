@@ -5,15 +5,15 @@ resolved dependency graph. Run `npm ci` rather than deleting the lockfile.
 
 ## Runtime
 
-| Package | Previous range | Updated range |
-| --- | --- | --- |
-| lucide-react | external Font Awesome kit | ^1.59.0 |
-| React / React DOM | ^16.13.1 | ^19.3.1 |
-| @denkschuldt/react-dialog | ^1.0.3 | ^2.0.0 |
-| dayjs | ^1.10.4 | ^1.11.23 |
-| framer-motion | ^4.1.11 | ^14.3.0 |
-| react-circular-progressbar | ^2.0.4 | ^2.2.0 |
-| react-router-dom | ^5.2.0 | ^7.18.4 |
+| Package                    | Previous range            | Updated range |
+| -------------------------- | ------------------------- | ------------- |
+| lucide-react               | external Font Awesome kit | ^1.59.0       |
+| React / React DOM          | ^16.13.1                  | ^19.3.1       |
+| @denkschuldt/react-dialog  | ^1.0.3                    | ^2.0.0        |
+| dayjs                      | ^1.10.4                   | ^1.11.23      |
+| framer-motion              | ^4.1.11                   | ^14.3.0       |
+| react-circular-progressbar | ^2.0.4                    | ^2.2.0        |
+| react-router-dom           | ^5.2.0                    | ^7.18.4       |
 
 `react-dialog` 2.0.0 is the published npm release and declares React 19 support.
 The old text inside its packaged README still says unpublished; the registry
@@ -91,6 +91,20 @@ are preserved, as are navigation, filtering, map links and the React UI.
 - Current Three requires WebGL 2. This intentionally drops the legacy WebGL 1
   renderer path. The browser tests cover current Chromium desktop/mobile;
   physical iOS/Android sensor/headset behavior is outside this scope.
+
+### Mobile viewport and drag follow-up
+
+The app uses the dynamic viewport height (`100dvh`, with a `100vh` fallback),
+flexes its photo area below the app bar, and keeps the panorama edge-to-edge on
+phones in portrait and landscape. `viewport-fit=cover` lets the background fill
+the screen while safe-area insets keep interactive controls clear of the notch
+and home indicator. The app cannot control Safari’s own toolbar or background.
+
+OrbitControls rotation speed changes from -0.15 to -0.45: the same pointer travel
+rotates three times farther in the same direction. A 100px horizontal drag in a
+400px-high viewer changes the azimuth by 40.5° instead of 13.5°. Pinch, wheel,
+zoom buttons, field-of-view limits and autorotation speed are unchanged.
+Mouse and touch regressions assert the angle and unchanged camera distance/FOV.
 
 ### Memory ownership
 

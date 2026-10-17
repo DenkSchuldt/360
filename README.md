@@ -1,4 +1,3 @@
-
 # Aventuras en 360
 
 I created this project to show the touristic places I've been in with a 360º view. All pictures featured are mine and taken by myself, sometimes with a phone, others with a 360 camera.
@@ -8,7 +7,6 @@ I created this project to show the touristic places I've been in with a 360º vi
   alt="Image showing the Quilotoa lagoon, in Ecuador"/>
 
 I really hope you find this site inspiring. Enjoy it!
-
 
 ## Run locally
 
@@ -27,14 +25,18 @@ layout, Spanish labels and panorama controls.
 
 ```sh
 npm run check             # Component/lifecycle tests and production build
-npx playwright install chromium
-npm run test:e2e          # Real panoramas in desktop and mobile Chromium
+npx playwright install chromium webkit
+npm run test:e2e          # Desktop/mobile Chromium and iPhone WebKit
 npm audit
 ```
 
 The browser tests require the production build from `npm run build`. They check
 real image loading, the single live viewer, navigation, filtering and the actual
-published dialog. GitHub CI runs these checks on every pull request.
+published dialog. Viewport regressions cover repeated portrait/landscape resizing,
+safe-area offsets, canvas sizing and non-overlapping controls in mobile Chromium
+and iPhone-emulated WebKit. Emulation does not reproduce physical Safari browser
+chrome; check the preview on an iPhone as well. GitHub CI runs these checks on
+every pull request.
 
 ## Build and deployment
 
