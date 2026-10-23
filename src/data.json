@@ -1,4 +1,16 @@
 [{
+		"id": 1633669200000,
+		"src": "Guayaquil/013.png",
+		"name": "Estadio George Capwell",
+		"location": "Guayaquil, Ecuador",
+		"marker": "https://www.google.com/maps/search/?api=1&query=Estadio+George+Capwell+Guayaquil+Ecuador",
+		"tags": [
+			"Guayaquil",
+			"Ecuador"
+		],
+		"date": 1633669200000
+	},
+	{
 		"id": 1595694311865,
 		"src": "Chimborazo/004.jpg",
 		"name": "Alausí",

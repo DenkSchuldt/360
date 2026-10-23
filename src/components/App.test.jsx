@@ -71,6 +71,32 @@ async function applyFilters(user, dialog) {
 }
 
 describe('gallery routing and persisted state', () => {
+  it('opens the Capwell panorama with its capture date and Guayaquil filter', async () => {
+    const user = userEvent.setup();
+    const capwell = rawData.find(item => item.id === 1633669200000);
+    expect(capwell).toMatchObject({
+      src: 'Guayaquil/013.png',
+      name: 'Estadio George Capwell',
+      location: 'Guayaquil, Ecuador',
+      tags: ['Guayaquil', 'Ecuador'],
+      date: Date.parse('2021-10-08T00:00:00-05:00'),
+    });
+    expect(rawData.filter(item => item.id === capwell.id)).toHaveLength(1);
+    expect(rawData.filter(item => item.src === capwell.src)).toHaveLength(1);
+    renderGallery([`/360/?id=${capwell.id}`]);
+    await expectPanorama(capwell, 0);
+    expect(document.querySelector('.dnk-date')).toHaveTextContent('octubre, 2021');
+    const dialog = await openFilters(user);
+    await user.click(dialog.getByText('#Guayaquil', { exact: true }));
+    await applyFilters(user, dialog);
+    const guayaquil = rawData.filter(item => item.tags.includes('Guayaquil'));
+    await expectPanorama(capwell, 0, guayaquil.length);
+    await user.click(screen.getByRole('button', { name: 'Siguiente' }));
+    await expectPanorama(guayaquil[1], 1, guayaquil.length);
+    await user.click(screen.getByRole('button', { name: 'Previa' }));
+    await expectPanorama(capwell, 0, guayaquil.length);
+  });
+
   it('honors a deep link over the saved panorama and preserves other query parameters', async () => {
     localStorage.setItem('my-id', String(rawData[1].id));
     renderGallery([`/360/?id=${rawData[5].id}&ref=shared`]);

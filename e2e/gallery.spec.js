@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import data from '../src/data.json' with { type: 'json' };
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
@@ -202,6 +203,22 @@ test('loads real panoramas, navigates, filters, and keeps the dialog usable', as
   expect(errors).toEqual([]);
 });
 
+test('loads the Capwell panorama with the correct date and survives a reload', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('?id=1633669200000');
+  await expectLoadedPanorama(page);
+  await expect(page.locator('.my-vwr')).toHaveAttribute(
+    'data-panorama-source', '/360/images/Guayaquil/013.png',
+  );
+  await expect(page.locator('.my-vwr-header strong')).toHaveText('Estadio George Capwell');
+  await expect(page.locator('.dnk-date')).toHaveText('octubre, 2021');
+  await page.reload();
+  await expectLoadedPanorama(page);
+  await expect(page.locator('.my-vwr-header strong')).toHaveText('Estadio George Capwell');
+  expect(errors).toEqual([]);
+});
+
 test('rapid navigation leaves one canvas and loads the final panorama', async ({
   page,
 }) => {
@@ -380,7 +397,7 @@ test('recovers from a failed image load and replaces an interrupted load', async
   await expectLoadedPanorama(page);
   await expect(
     page.getByRole('spinbutton', { name: 'Número de panorama' }),
-  ).toHaveValue('6');
+  ).toHaveValue(String(data.findIndex(item => item.id === 1595694311865) + 6));
   await expect(page.locator('.panorama-canvas')).toHaveCount(1);
   expect(await page.evaluate(() => window.__galleryContexts.size)).toBe(1);
 });
